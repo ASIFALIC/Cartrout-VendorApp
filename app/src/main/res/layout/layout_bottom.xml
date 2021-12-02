@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="3"
+        android:paddingTop="8dp"
+        android:gravity="center"
+        android:paddingBottom="8dp"
+
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/lyt_home"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            >
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@mipmap/bottom_home">
+
+            </ImageView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="home"
+                android:textSize="10dp"
+                android:textAllCaps="true"
+                android:textColor="@color/lt_black_text_color"
+                >
+
+            </TextView>
+
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+            <LinearLayout
+                android:id="@+id/lyt_orders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                >
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@mipmap/bottom_orders">
+
+                </ImageView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="orders"
+                    android:textSize="10dp"
+
+                    android:textAllCaps="true"
+                    android:textColor="@color/lt_black_text_color"
+                    >
+
+                </TextView>
+
+            </LinearLayout>
+            <TextView
+                android:id="@+id/txt_ordercount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:layout_alignEnd="@id/lyt_orders"
+
+                android:textColor="@color/black"
+                android:background="@drawable/shape_yellow_round">
+
+            </TextView>
+
+        </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/lyt_menu"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            >
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@mipmap/bottom_menu">
+
+            </ImageView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="menu"
+                android:textSize="10dp"
+
+                android:textAllCaps="true"
+                android:textColor="@color/lt_black_text_color"
+                >
+
+            </TextView>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

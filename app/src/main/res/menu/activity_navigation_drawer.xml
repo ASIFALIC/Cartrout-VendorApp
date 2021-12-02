@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/left_mn_dashboard"
+            android:title="@string/dashboard" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/left_mn_orders"
+            android:title="@string/menu_management" />
+        <item
+            android:id="@+id/nav_order_manage"
+            android:icon="@drawable/left_mn_order_manage"
+            android:title="@string/order_management" />
+       <!-- <item
+            android:id="@+id/nav_category"
+            android:icon="@drawable/left_mn_order_manage"
+            android:title="@string/category_management" />-->
+        <item
+            android:id="@+id/nav_tools"
+            android:icon="@drawable/left_mn_gnrl_settings"
+            android:title="@string/general_settings" />
+<!--        <item-->
+<!--            android:id="@+id/nav_review"-->
+<!--            android:icon="@drawable/left_mn_review"-->
+<!--            android:title="@string/reviews" />-->
+
+<!--        <item-->
+<!--            android:id="@+id/nav_not"-->
+<!--            android:icon="@drawable/left_mn_review"-->
+<!--            android:title="@string/notification" />-->
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/left_mn_logout"
+            android:title="@string/logout" />
+    </group>
+
+    <!--<item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/menu_share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/menu_send" />
+        </menu>
+    </item>-->
+
+</menu>

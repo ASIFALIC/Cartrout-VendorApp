@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/main_content">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/lyt_bottom"
+        android:id="@+id/main_layout"
+
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <LinearLayout
+                android:id="@+id/lyt_top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp"
+
+                android:background="@color/white"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="90dp"
+                    android:scaleType="fitXY"
+                    android:background="@drawable/logobw">
+                </ImageView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:drawablePadding="6dp"
+                    android:text="Help Desk : ">
+                </TextView>
+                <LinearLayout
+                    android:id="@+id/ll_whadsap"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:drawablePadding="6dp"
+                        android:text="@string/help_desk_no">
+                    </TextView>
+                    <ImageView
+                        android:layout_marginLeft="@dimen/textsize_10"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/whatsup">
+                    </ImageView>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_mail"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:drawablePadding="6dp"
+                        android:text="@string/helpdesk_mail_id">
+                    </TextView>
+                    <ImageView
+                        android:layout_marginLeft="@dimen/textsize_10"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/ic_email">
+                    </ImageView>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_web"
+                    android:gravity="center"
+                    android:padding="10dp"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:drawablePadding="6dp"
+                        android:text="www.cartroot.com">
+                    </TextView>
+                    <ImageView
+                        android:layout_marginLeft="@dimen/textsize_10"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/ic_web_browser">
+                    </ImageView>
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/txt_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                </TextView>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_below="@id/lyt_top"
+                >
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="?actionBarSize"
+                    >
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="10dp"
+                        android:weightSum="1">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_weight=".5">
+                            <TextView
+                                android:id="@+id/txt_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="status"
+                                android:textAllCaps="true"
+                                android:gravity="center|left"
+                                android:textColor="@color/black"
+                                ></TextView>
+
+
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_weight=".5"
+                            android:gravity="center|right">
+                            <Switch
+                                android:id="@+id/sw_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="close"
+                                android:textColor="@color/black"
+
+                                android:textAllCaps="true"
+                                >
+
+                            </Switch>
+
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="?actionBarSize"
+                    app:cardElevation="3dp"
+                    android:layout_marginTop="3dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="10dp"
+                        android:weightSum="1">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_weight=".5"
+                            >
+                            <TextView
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="busy"
+                                android:textAllCaps="true"
+                                android:gravity="center|left"
+                                android:textColor="@color/black"
+                                >
+
+                            </TextView>
+
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_weight=".5"
+                            android:gravity="center|right">
+                            <Switch
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="off"
+                                android:textColor="@color/black"
+                                android:id="@+id/sw_busy"
+
+                                android:textAllCaps="true"
+                                >
+
+                            </Switch>
+
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardElevation="3dp"
+                    android:layout_marginTop="5dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="10dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:padding="5dp">
+                            <TextView
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="Delivery Charge : "
+                                android:textAllCaps="true"
+                                android:gravity="center|left"
+                                android:textColor="@color/black"
+                                >
+
+                            </TextView>
+                            <TextView
+                                android:id="@+id/delivery_charge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:textAllCaps="true"
+                                android:gravity="center|left"
+                                android:textColor="@color/black"
+                                >
+
+                            </TextView>
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:padding="5dp"
+                            android:orientation="horizontal"
+                            >
+                            <TextView
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="Packing Charge : "
+                                android:textAllCaps="true"
+                                android:gravity="center|left"
+                                android:textColor="@color/black"
+                                >
+
+                            </TextView>
+                            <TextView
+                                android:id="@+id/packing_charge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:textAllCaps="true"
+                                android:gravity="center|left"
+                                android:textColor="@color/black"
+                                >
+
+                            </TextView>
+
+                        </LinearLayout>
+                        <TextView
+                            android:layout_marginTop="@dimen/textsize_10"
+                            android:layout_width="match_parent"
+                            android:gravity="center"
+                            android:textSize="14dp"
+                            android:textColor="@color/black"
+                            android:text="Package Expiry Date
+"
+                            android:layout_height="match_parent">
+
+
+                        </TextView>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:gravity="center"
+                            android:id="@+id/date"
+                            android:textSize="14dp"
+                            android:textColor="@color/red100"
+                            android:layout_height="match_parent">
+
+
+                        </TextView>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_above="@id/lyt_bottom"
+        android:id="@+id/no_connection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <include
+            layout="@layout/no_internert"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lyt_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
+
+
+
+        <include layout="@layout/layout_bottom" />
+    </LinearLayout>
+
+
+</RelativeLayout>

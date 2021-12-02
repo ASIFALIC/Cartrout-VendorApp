@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/empty_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        >
+
+
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/no_location"
+            android:layout_centerInParent="true"
+
+            />
+
+        <TextView
+            android:id="@+id/head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Service Unavailable At This Area"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_gravity="center|left"
+            android:gravity="center"
+            android:textColor="@color/colorPrimary"
+            android:layout_below="@+id/img"
+            android:padding="10dp"
+            android:typeface="serif"
+            />
+
+
+        <TextView
+            android:id="@+id/small_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="We don't deliver here yet"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+            android:textColor="@color/lt_grey_text_color"
+            android:paddingTop="14dp"
+            android:layout_below="@+id/head"
+            android:padding="10dp"
+            android:layout_centerHorizontal="true"
+
+            />
+
+        <Button
+            android:id="@+id/btn_change_loc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="Change Address"
+            android:textColor="@color/white"
+            android:layout_below="@+id/small_txt"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="50dp"
+            />
+    </LinearLayout>
+
+
+</RelativeLayout>

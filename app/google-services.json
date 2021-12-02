@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "50490133101",
+    "project_id": "cart-rout",
+    "storage_bucket": "cart-rout.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50490133101:android:997dcd6dbfdc390a6a4d64",
+        "android_client_info": {
+          "package_name": "com.oliek.cartrout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "50490133101-nsnd916givviuprganhgv1u64t72i3g4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.oliek.cartrout",
+            "certificate_hash": "05e5a1a65c92cd27c566499c16ad424581f124c3"
+          }
+        },
+        {
+          "client_id": "50490133101-u9n6a7lhc1a0eege3im4fjk7u5euhah0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdaBgju_wnV_J4Sf8zCWPr9hY5Dco-mRI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "50490133101-u9n6a7lhc1a0eege3im4fjk7u5euhah0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/txt_OrderId"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:textColor="@color/lt_black_text_color" />
+
+
+        <Spinner
+            android:layout_marginHorizontal="16dp"
+
+            android:id="@+id/spnr_cmplnt"
+            android:layout_width="match_parent"
+            android:background="@null"
+
+            android:layout_height="wrap_content">
+
+        </Spinner>
+        <EditText
+            android:gravity="top|left"
+            android:scrollbars="vertical"
+            android:padding="8dp"
+            android:id="@+id/edt_complaint"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="16dp"
+            android:background="@drawable/button_border_orange"
+            android:layout_below="@id/spnr_cmplnt"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:inputType="textMultiLine"
+            >
+
+        </EditText>
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_marginHorizontal="16dp"
+            android:layout_below="@id/edt_complaint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:background="@color/colorPrimaryDark"
+            android:text="@string/submit">
+
+        </Button>
+        <Button
+            android:id="@+id/btn_history"
+            android:layout_marginHorizontal="16dp"
+            android:layout_below="@id/edt_complaint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_marginTop="@dimen/textsize_10"
+            android:background="@color/colorPrimaryDark"
+            android:text="@string/History">
+
+        </Button>
+
+    </LinearLayout>
+
+</RelativeLayout>

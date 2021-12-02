@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#F07E00</color>
+    <color name="colorPrimaryDark">#DA7506</color>
+    <color name="colorAccent">#151515</color>
+    <color name="offer_color">#cac6c6</color>
+
+    <color name="transparent">#00ffffff</color>
+    <color name="grey">#F1F1F1</color>
+    <color name="lockscreen_circle">#8f6f00</color>
+    <color name="darkGrey">#808080</color>
+    <color name="duskYellow">#ffc501</color>
+    <color name="derekgregory">#49484C</color>
+    <color name="red100">#d30000</color>
+    <color name="maroon">#770f36</color>
+    <color name="overlay">#AA1C1C1C</color>
+    <color name="dialog_background">#00ffffff </color>
+    <color name="lt_grey_background">#e1efebeb</color>
+    <color name="yellow">#FFC402</color>
+    <color name="lt_grey2">#efefef</color>
+
+    <color name="colorwhite"> #FFFFFF</color>
+    <color name="dot_white">@color/white</color>
+    <color name="White">#FFFFFF</color>
+    <color name="dot_grey">#9C9C9C</color>>
+    <color name="blue">#01A2C4</color>>
+    <color name="green">#4caf50</color>
+    <color name="tr">#004CAF50</color>
+
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="lt_grey_text_color">#b1afaf</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
+    <color name="light_blue_A200">#FF40C4FF</color>
+    <color name="light_blue_A400">#FF00B0FF</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="lt_black_text_color">#716b6b</color>
+    <color name="black_text_color">#000000</color>
+
+    <color name="picked">#FFC107</color>
+    <color name="cancelled">#D81515</color>
+    <color name="confrimed">#965A00</color>
+    <color name="delivered">#009688</color>
+
+</resources>

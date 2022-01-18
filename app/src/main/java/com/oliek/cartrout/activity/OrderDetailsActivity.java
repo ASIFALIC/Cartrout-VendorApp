@@ -23,6 +23,8 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -34,15 +36,21 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.android.gms.common.api.internal.RemoteCall;
 import com.oliek.cartrout.GlobalConstants;
 import com.oliek.cartrout.R;
 import com.oliek.cartrout.adapters.CartItamAdapter;
 import com.oliek.cartrout.base.BaseActivity;
+import com.oliek.cartrout.callback.RecycleViewItemCallBack;
+import com.oliek.cartrout.dialogue.ItemDialog;
 import com.oliek.cartrout.model.CartModel;
 import com.oliek.cartrout.model.OrderModel;
+import com.oliek.cartrout.model.ProductModel;
 import com.oliek.cartrout.model.UserModel;
+import com.oliek.cartrout.model.base.BaseResponse;
 import com.oliek.cartrout.model.responsemodel.OrderCountResponseModel;
 import com.oliek.cartrout.model.responsemodel.OrderViewResponseModel;
+import com.oliek.cartrout.model.responsemodel.ProductsResponseModel;
 import com.oliek.cartrout.network.ApiInterface;
 import com.oliek.cartrout.network.ApiNetwork;
 import com.oliek.cartrout.preference.PreferenceService;
@@ -53,8 +61,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.oliek.cartrout.GlobalConstants.TAG;
+import static java.security.AccessController.getContext;
 
-public class OrderDetailsActivity extends BaseActivity {
+public class OrderDetailsActivity extends BaseActivity implements RecycleViewItemCallBack {
 
     LinearLayout lyt_orders, lyt_home, lyt_menu, lyt_status_btn;
     RecyclerView rec_orderdetails;
@@ -65,12 +74,13 @@ public class OrderDetailsActivity extends BaseActivity {
     private TextView txt_status, txt_menu_qty, txt_total_rate;
     String staff_phone;
     Button btn_accept, btn_delivered,btn_reject;
-    LinearLayout lyt_accpet_reject,ll_home_d;
+    LinearLayout lyt_accpet_reject,ll_home_d,llcall;
     CartItamAdapter cartItamAdapter;
+    ItemDialog itamdialoge;
     private int resid, userID;
     private String key;
     int orderId;
-     Dialog review_popup;
+     Dialog review_popup,add_popup,edit_popup;
     TextView txt_ordercount, txt_excl_rate, txt_tax_rate, txt_packingcharge, txt_disc_amnt,txt_itam_total,txt_delivery_charge;
 TextView txttv,txthd,txt_address,txt_landmarks;
     private PreferenceService sh;
@@ -83,7 +93,7 @@ TextView txttv,txthd,txt_address,txt_landmarks;
     private UsbInterface mInterface;
     private UsbEndpoint mEndPoint;
     private PendingIntent mPermissionIntent;
-
+ImageButton add_itam;
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
     private static final Boolean forceCLaim = true;
     OrderModel model;
@@ -102,10 +112,43 @@ TextView txttv,txthd,txt_address,txt_landmarks;
         model = (OrderModel) getIntent().getSerializableExtra(GlobalConstants.DATA);
 
 
-        initUI();
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         LinearLayoutManager layoutManagerNewsTrending = new LinearLayoutManager(this);
         layoutManagerNewsTrending.setOrientation(LinearLayoutManager.VERTICAL);
+
+        user = PreferenceService.getInstance(this).getUser();
+        apiService = ApiNetwork.getClient().create(ApiInterface.class);
+        ll_home_d = findViewById(R.id.ll_home_d);
+        lyt_status_btn = findViewById(R.id.lyt_status_btn);
+        txt_landmarks = findViewById(R.id.txt_landmarks);
+        txt_address= findViewById(R.id.txt_address);
+        txttv= findViewById(R.id.txt_tk);
+        txthd= findViewById(R.id.txt_hd);
+        lyt_accpet_reject = findViewById(R.id.lyt_accpet_reject);
+        lyt_orders = findViewById(R.id.lyt_orders);
+        lyt_home = findViewById(R.id.lyt_home);
+        lyt_menu = findViewById(R.id.lyt_menu);
+        llcall = findViewById(R.id.ll_call);
+        txt_orderno = findViewById(R.id.txt_orderno);
+        txt_date_time = findViewById(R.id.txt_date_time);
+        txt_name = findViewById(R.id.txt_name);
+        img_call = findViewById(R.id.img_call);
+        txt_status = findViewById(R.id.txt_status);
+        txt_menu_qty = findViewById(R.id.txt_menu_qty);
+        txt_total_rate = findViewById(R.id.txt_total_rate);
+        btn_accept = findViewById(R.id.btn_accept);
+        btn_reject= findViewById(R.id.btn_reject);
+        btn_delivered = findViewById(R.id.btn_delivered);
+        txt_ordercount = findViewById(R.id.txt_ordercount);
+        txt_itam_total = findViewById(R.id.txt_itam_total);
+        txt_delivery_charge = findViewById(R.id.txt_delivery_charge);
+        txt_packingcharge = findViewById(R.id.txt_packingcharge);
+        txt_disc_amnt = findViewById(R.id.txt_disc_amnt);
+
+        menuList = new ArrayList<>();
+
+        pbLoadCast = findViewById(R.id.pb_cast_loading);
+        orderId =model.getId();
         recyclerView.setLayoutManager(layoutManagerNewsTrending);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
@@ -117,12 +160,17 @@ TextView txttv,txthd,txt_address,txt_landmarks;
         btn_accept.setOnClickListener(this);
         btn_reject.setOnClickListener(this);
         btn_delivered.setOnClickListener(this);
-        user = PreferenceService.getInstance(this).getUser();
-        apiService = ApiNetwork.getClient().create(ApiInterface.class);
+        add_itam= findViewById(R.id.add_itam);
+        add_itam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               getProductLit();
 
-        orderId =model.getId();
+            }
+        });
 
-        txt_name.setOnClickListener(new View.OnClickListener() {
+
+        llcall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!staff_phone.equals("")) {
@@ -136,30 +184,52 @@ TextView txttv,txthd,txt_address,txt_landmarks;
             }
         });
 
-        img_call.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!model.getMobil().equals("")) {
-                    Intent intent = new Intent(Intent.ACTION_DIAL);
-                    intent.setData(Uri.parse("tel:" + model.getMobil()));
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.page_in, R.anim.page_out);
 
-                }
-
-            }
-        });
         getdata();
         getOrdercount();
 
 
     }
 
+    private void getProductLit() {
+
+        String url = GlobalConstants.BASE_URL + "getproductnactiv/?token="+user.getApi_tocken()+"&entity_id="+user.getEntity().getId();
+        showProgressDialog(true);
+        Call<ProductsResponseModel> call = apiService.getproductnactiv(url);
+        call.enqueue(new Callback<ProductsResponseModel>() {
+            @Override
+            public void onResponse(Call<ProductsResponseModel> call, Response<ProductsResponseModel> response) {
+                if (response.body()!=null) {
+                    if(response.body().isSuccess()){
+
+                        showpopupProduvt(response.body().getProducts());
+
+                    }else {
+                        Toast.makeText(OrderDetailsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        showProgressDialog(false);
+                    }
+
+
+                } else {
+                    Toast.makeText(OrderDetailsActivity.this, GlobalConstants.NO_INTERNET, Toast.LENGTH_SHORT).show();
+                    showProgressDialog(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProductsResponseModel> call, Throwable t) {
+                Toast.makeText(OrderDetailsActivity.this, GlobalConstants.NO_INTERNET, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, t.toString());
+                showProgressDialog(false);
+
+            }
+        });
+    }
 
 
     private void initRecyclerView(ArrayList<CartModel> arrayList) {
         if (arrayList != null&&arrayList.size()!=0) {
-            cartItamAdapter = new CartItamAdapter(this, arrayList);
+            cartItamAdapter = new CartItamAdapter(this, arrayList,this);
             recyclerView.setAdapter(cartItamAdapter);
             cartItamAdapter.notifyDataSetChanged();
 //            empty.setVisibility(View.GONE);
@@ -266,38 +336,7 @@ TextView txttv,txthd,txt_address,txt_landmarks;
 
 
     }
-    private void initUI() {
-        ll_home_d = findViewById(R.id.ll_home_d);
-        lyt_status_btn = findViewById(R.id.lyt_status_btn);
-        txt_landmarks = findViewById(R.id.txt_landmarks);
-        txt_address= findViewById(R.id.txt_address);
-        txttv= findViewById(R.id.txt_tk);
-        txthd= findViewById(R.id.txt_hd);
-        lyt_accpet_reject = findViewById(R.id.lyt_accpet_reject);
-        lyt_orders = findViewById(R.id.lyt_orders);
-        lyt_home = findViewById(R.id.lyt_home);
-        lyt_menu = findViewById(R.id.lyt_menu);
-        txt_orderno = findViewById(R.id.txt_orderno);
-        txt_date_time = findViewById(R.id.txt_date_time);
-        txt_name = findViewById(R.id.txt_dlv_staff);
-        img_call = findViewById(R.id.img_call);
-        txt_status = findViewById(R.id.txt_status);
-        txt_menu_qty = findViewById(R.id.txt_menu_qty);
-        txt_total_rate = findViewById(R.id.txt_total_rate);
-        btn_accept = findViewById(R.id.btn_accept);
-        btn_reject= findViewById(R.id.btn_reject);
-        btn_delivered = findViewById(R.id.btn_delivered);
-        txt_ordercount = findViewById(R.id.txt_ordercount);
-        txt_itam_total = findViewById(R.id.txt_itam_total);
-        txt_delivery_charge = findViewById(R.id.txt_delivery_charge);
-        txt_packingcharge = findViewById(R.id.txt_packingcharge);
-        txt_disc_amnt = findViewById(R.id.txt_disc_amnt);
 
-        menuList = new ArrayList<>();
-
-        pbLoadCast = findViewById(R.id.pb_cast_loading);
-
-    }
 
 
 
@@ -349,7 +388,7 @@ TextView txttv,txthd,txt_address,txt_landmarks;
         } else if (model.getStatus() == 2) {
             txt_status.setTextColor(getResources().getColor(R.color.delivered));
             txt_status.setText("Delivered");
-            img_call.setVisibility(View.GONE);
+            img_call.setVisibility(View.VISIBLE);
             lyt_accpet_reject.setVisibility(View.GONE);
             btn_delivered.setVisibility(View.GONE);
             btn_delivered.clearAnimation();
@@ -567,9 +606,249 @@ TextView txttv,txthd,txt_address,txt_landmarks;
     }
 
 
+    @Override
+    public void onItemClick(Object data, Object sender) {
+        if (sender.equals(GlobalConstants.EDIT)) {
+
+            CartModel model = (CartModel) data;
+           editCartItam(model);
+
+        }else if (sender.equals(GlobalConstants.DELETE)) {
+
+            CartModel model = (CartModel) data;
+            deleteCartItam(model);
+
+        }else if (sender.equals(GlobalConstants.DATA)) {
+
+            ProductModel model = (ProductModel) data;
+            addCartItam(model);
+
+        }
+    }
+
+    private void addCartItam(ProductModel model) {
+        LayoutInflater layoutInflater = (LayoutInflater) OrderDetailsActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        View popup_view = layoutInflater.inflate(R.layout.edit_item_popup, null);
+        Popup popup = new Popup();
+        add_popup = popup.dialoglog(OrderDetailsActivity.this, popup_view);
+        add_popup.setCancelable(true);
+        Button cancel_btn = popup_view.findViewById(R.id.cancel_btn);
+        Button btn_positive = popup_view.findViewById(R.id.btn_positive);
+        TextView head = popup_view.findViewById(R.id.head);
+        EditText content = popup_view.findViewById(R.id.popup_txt);
 
 
+        head.setText(model.getName());
+        content.setText("1") ;
+        add_popup.show();
+        cancel_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                add_popup.dismiss();
+
+            }
+        });
 
 
+        btn_positive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(content.getText().toString().equals("0")){
+                    Toast.makeText(OrderDetailsActivity.this, "Quantity cannot be zero", Toast.LENGTH_SHORT).show();
+
+                }else {
+                    addApi(model,content.getText().toString());
+                }
+
+            }
+        });
+    }
+
+    private void addApi(ProductModel model, String toString) {
+        String url = GlobalConstants.BASE_URL + "additam/?token="+user.getApi_tocken()+"&add_product_id="+model.getId()+"&order_id="+orderId+"&newcartquantity="+toString;
+        showProgressDialog(true);
+        Call<BaseResponse> call = apiService.additam(url);
+        call.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                if (response.isSuccessful()&&response.body()!=null) {
+                    if(response.body().isSuccess()){
+                        add_popup.dismiss();
+                        itamdialoge.dismiss();
+
+                        getdata();
+
+                    }else {
+                        showProgressDialog(false);
+
+                    }
+
+
+                } else {
+                    showProgressDialog(false);
+
+                    Toast.makeText(OrderDetailsActivity.this, GlobalConstants.NO_INTERNET, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse> call, Throwable t) {
+                Toast.makeText(OrderDetailsActivity.this, GlobalConstants.NO_INTERNET, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, t.toString());
+                showProgressDialog(false);
+
+            }
+        });
+    }
+
+    private void deleteCartItam(CartModel model) {
+        LayoutInflater layoutInflater = (LayoutInflater) OrderDetailsActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        View popup_view = layoutInflater.inflate(R.layout.reject_popup, null);
+        Popup popup = new Popup();
+        review_popup = popup.dialoglog(OrderDetailsActivity.this, popup_view);
+        review_popup.setCancelable(true);
+        Button cancel_btn = popup_view.findViewById(R.id.cancel_btn);
+        Button btn_positive = popup_view.findViewById(R.id.btn_positive);
+        TextView head = popup_view.findViewById(R.id.head);
+        TextView content = popup_view.findViewById(R.id.popup_txt);
+
+
+        head.setText("Are you sure to DELETE the item");
+        content.setText(model.getProduct_name()) ;
+        review_popup.show();
+        cancel_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                review_popup.dismiss();
+
+            }
+        });
+
+
+        btn_positive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            ditletApi(model);
+            }
+        });
+    }
+
+    private void ditletApi(CartModel model) {
+        String url = GlobalConstants.BASE_URL + "deletecart/?token="+user.getApi_tocken()+"&id="+model.getId();
+        showProgressDialog(true);
+        Call<BaseResponse> call = apiService.deleteApi(url);
+        call.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                if (response.isSuccessful()&&response.body()!=null) {
+                    if(response.body().isSuccess()){
+                        review_popup.dismiss();
+                    getdata();
+
+                    }else {
+                        showProgressDialog(false);
+
+                    }
+
+
+                } else {
+                    showProgressDialog(false);
+
+                    Toast.makeText(OrderDetailsActivity.this, GlobalConstants.NO_INTERNET, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse> call, Throwable t) {
+                Toast.makeText(OrderDetailsActivity.this, GlobalConstants.NO_INTERNET, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, t.toString());
+                showProgressDialog(false);
+
+            }
+        });
+    }
+
+    private void editCartItam(CartModel model) {
+        LayoutInflater layoutInflater = (LayoutInflater) OrderDetailsActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        View popup_view = layoutInflater.inflate(R.layout.edit_item_popup, null);
+        Popup popup = new Popup();
+        edit_popup = popup.dialoglog(OrderDetailsActivity.this, popup_view);
+        edit_popup.setCancelable(true);
+        Button cancel_btn = popup_view.findViewById(R.id.cancel_btn);
+        Button btn_positive = popup_view.findViewById(R.id.btn_positive);
+        TextView head = popup_view.findViewById(R.id.head);
+        EditText content = popup_view.findViewById(R.id.popup_txt);
+
+
+        head.setText(model.getProduct_name());
+        content.setText(model.getQuantity()+"") ;
+        edit_popup.show();
+        cancel_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                edit_popup.dismiss();
+
+            }
+        });
+
+
+        btn_positive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(content.getText().toString().equals("0")){
+                    Toast.makeText(OrderDetailsActivity.this, "Quantity cannot be zero", Toast.LENGTH_SHORT).show();
+
+                }else {
+                    model.setQuantity(Integer.parseInt(content.getText().toString()));
+                    editApi(model);
+                }
+
+            }
+        });
+    }
+
+    private void editApi(CartModel model) {
+        String url = GlobalConstants.BASE_URL + "editcartitam/?token="+user.getApi_tocken()+"&cartid="+model.getId()+"&quantity="+model.getQuantity();
+        showProgressDialog(true);
+        Call<BaseResponse> call = apiService.editcartitem(url);
+        call.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                if (response.isSuccessful()&&response.body()!=null) {
+                    if(response.body().isSuccess()){
+                        edit_popup.dismiss();
+                        getdata();
+
+                    }else {
+                        showProgressDialog(false);
+
+                    }
+
+
+                } else {
+                    showProgressDialog(false);
+
+                    Toast.makeText(OrderDetailsActivity.this, GlobalConstants.NO_INTERNET, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse> call, Throwable t) {
+                Toast.makeText(OrderDetailsActivity.this, GlobalConstants.NO_INTERNET, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, t.toString());
+                showProgressDialog(false);
+
+            }
+        });
+    }
+    private void showpopupProduvt(ArrayList<ProductModel> productModels) {
+        itamdialoge = ItemDialog.newInstance(this, this,productModels);
+        itamdialoge.show(getActivity().getFragmentManager(), "terms");
+        showProgressDialog(false);
+
+    }
 
 }

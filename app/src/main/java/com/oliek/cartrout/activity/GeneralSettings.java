@@ -284,6 +284,15 @@ public class GeneralSettings extends BaseActivity implements View.OnClickListene
                 review_popup.dismiss();
             }
         });
+        cancel_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sw_status.setChecked(!isChecked);
+
+
+                review_popup.dismiss();
+            }
+        });
 
     }
 

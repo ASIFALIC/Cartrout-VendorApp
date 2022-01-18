@@ -28,7 +28,9 @@
             android:name=".activity.NavigationActivity"
             android:label="@string/title_activity_navigation"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".activity.ItemCatAcivity"></activity>
+        <activity android:name=".activity.ItemCatAcivity">
+
+        </activity>
         <activity android:name=".activity.ItemManagementAcivity"></activity>
         <activity android:name=".activity.NewOrderActivity"></activity>
         <activity android:name=".activity.OrderDetailsActivity"></activity>

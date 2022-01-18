@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -34,25 +35,22 @@ public class CartItamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Date d;
     private String date;
 
-    public CartItamAdapter(Context mContext, ArrayList<CartModel> mList) {
+    public CartItamAdapter(Context mContext, ArrayList<CartModel> mList , RecycleViewItemCallBack recycleViewItemCallBack ) {
         this.mContext = mContext;
         this.list = mList;
+        this.mRecycleViewItemCallBack=recycleViewItemCallBack;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView txt_menu,txt_rate,txt_qty,txt_total,txt_pref,txt_portion,txt_cat;
-
+ImageButton bt_edit,bt_delete;
         public MyViewHolder(View itemView) {
             super(itemView);
             txt_menu=itemView.findViewById(R.id.txt_menu);
-            txt_rate=itemView.findViewById(R.id.txt_rate);
             txt_qty=itemView.findViewById(R.id.txt_qty);
             txt_total=itemView.findViewById(R.id.txt_total);
-            txt_pref=itemView.findViewById(R.id.txt_pref);
-            txt_portion=itemView.findViewById(R.id.txt_portion);
-            txt_cat=itemView.findViewById(R.id.txt_cat);
-
-
+            bt_edit=itemView.findViewById(R.id.bt_edit);
+            bt_delete=itemView.findViewById(R.id.bt_delete);
 
         }
     }
@@ -73,11 +71,28 @@ public class CartItamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         // holder.txt_cat.setText(String.valueOf(list.get(position).getItem().getCategory()));
         viewHolder.txt_menu.setText(list.get(position).getProduct_name());
-        viewHolder.txt_qty.setText(list.get(position).getQuantity()+"");
-        viewHolder.txt_rate.setText("₹"+list.get(position).getPrice());
-        viewHolder.txt_total.setText("₹"+list.get(position).getAmount()+"");
-        //holder.txt_pref.setText(list.get(position).getPreference());
-        viewHolder.txt_pref.setVisibility(View.GONE);
+        viewHolder.txt_qty.setText(list.get(position).getPrice()+"*"+list.get(position).getQuantity()+"");
+        viewHolder.txt_total.setText(list.get(position).getAmount()+"");
+        viewHolder.bt_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mRecycleViewItemCallBack.onItemClick( list.get(position),GlobalConstants.EDIT);
+
+            }
+        });
+        if(list.size()==1) {
+            viewHolder.bt_delete.setVisibility(View.GONE);
+        }
+            viewHolder.bt_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    mRecycleViewItemCallBack.onItemClick(list.get(position), GlobalConstants.DELETE);
+
+                }
+            });
+
 
     }
 

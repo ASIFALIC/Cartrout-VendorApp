@@ -8,9 +8,18 @@ public class UserModel implements Serializable {
     private String name;
     private String mobile;
     private String email;
+    private int user_type;
     private String api_tocken;
     private String fb_tocken;
     private Entity entity;
+
+    public int getUser_type() {
+        return user_type;
+    }
+
+    public void setUser_type(int user_type) {
+        this.user_type = user_type;
+    }
 
     public Entity getEntity() {
         return entity;

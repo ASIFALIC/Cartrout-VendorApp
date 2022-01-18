@@ -6,8 +6,10 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -106,14 +108,31 @@ ArrayList<ProductModel> productModels;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_management_acivity);
-
+        user = PreferenceService.getInstance(this).getUser();
+        apiService = ApiNetwork.getClient().create(ApiInterface.class);
 //        titil = Objects.requireNonNull(getIntent().getExtras()).getString("name");
         model = (CategoryModel) getIntent().getSerializableExtra(GlobalConstants.DATA);
         this.setTitle("Item Management");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(0);
-        sh= PreferenceService.getInstance(this);
-
+        if(user.getUser_type()==4){
+            AlertDialog.Builder builder = new AlertDialog.Builder(
+                    getApplicationContext());
+            builder.setCancelable(true);
+            builder.setTitle("user not authorized to this page");
+            builder.setInverseBackgroundForced(true);
+            builder.setPositiveButton("ok",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog,
+                                            int which) {
+                            onBackPressed();
+                            dialog.dismiss();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
         lyt_orders=findViewById(R.id.lyt_orders);
         lyt_home=findViewById(R.id.lyt_home);
         lyt_menu=findViewById(R.id.lyt_menu);
@@ -212,8 +231,7 @@ ArrayList<ProductModel> productModels;
 
     }
     private void getItemList() {
-        user = PreferenceService.getInstance(this).getUser();
-        apiService = ApiNetwork.getClient().create(ApiInterface.class);
+
         String url = GlobalConstants.BASE_URL + "getproduct/?token="+user.getApi_tocken()+"&web_category_id="+model.getId();
         showProgressDialog(true);
         Call<ProductsResponseModel> call = apiService.getproduct(url);

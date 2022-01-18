@@ -77,6 +77,17 @@ public interface ApiInterface {
     @GET()
     Call<BaseResponse> updateStatusopen(@Url String url);
 
+    @GET()
+    Call<BaseResponse> deleteApi( @Url String url);
+
+    @GET()
+    Call<BaseResponse> editcartitem( @Url String url);
+
+    @GET()
+    Call<BaseResponse> additam( @Url String url);
+
+    @GET()
+    Call<ProductsResponseModel> getproductnactiv( @Url String url);
 
 
 
@@ -85,6 +96,7 @@ public interface ApiInterface {
 
     @GET()
     Call<OrderViewResponseModel> getOrderView(@Header("Authorization") String authorization, @Url String url);
+
 
 
     @GET("staff-app-dash/")

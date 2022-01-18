@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -83,9 +85,28 @@ public class ItemCatAcivity extends BaseActivity implements View.OnClickListener
         SharedPreferences sp=getSharedPreferences(MyPref,MODE_PRIVATE);
         SharedPreferences.Editor editor= sp.edit();
         Intent mIntent = getIntent();
-        sh= PreferenceService.getInstance(this);
+        user = PreferenceService.getInstance(this).getUser();
+        user.setUser_type(4);
 
-
+        if(user.getUser_type()==4){
+            AlertDialog.Builder builder = new AlertDialog.Builder(
+                    this);
+            builder.setCancelable(false);
+            builder.setTitle("Authorized");
+            builder.setMessage("User not Authorized to this Page");
+            builder.setInverseBackgroundForced(true);
+            builder.setPositiveButton("ok",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog,
+                                            int which) {
+                            gotoHome();
+                            dialog.dismiss();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
         txt_count=findViewById(R.id.txt_count);
 
         txt_ordercount=findViewById(R.id.txt_ordercount);
@@ -115,7 +136,6 @@ public class ItemCatAcivity extends BaseActivity implements View.OnClickListener
             }
         });
 
-        user = PreferenceService.getInstance(this).getUser();
         apiService = ApiNetwork.getClient().create(ApiInterface.class);
         btn_tryagain.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,6 +150,11 @@ public class ItemCatAcivity extends BaseActivity implements View.OnClickListener
         getOrdercount();
     }
 
+    private void gotoHome() {
+        Intent intent = new Intent(getApplicationContext(), NavigationActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
 
     private void setOrderCount(int count ) {

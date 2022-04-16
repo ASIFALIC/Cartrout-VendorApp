@@ -21,9 +21,27 @@ public class OrderModel extends BaseResponse implements Serializable  {
     private String diff;
     private String invoiceno;
     private int status;
+    private int open_status;
+    private int customer_status;
     private int delivery_type;
     private String created_at;
     private String landmarks;
+
+    public int getCustomer_status() {
+        return customer_status;
+    }
+
+    public void setCustomer_status(int customer_status) {
+        this.customer_status = customer_status;
+    }
+
+    public int getOpen_status() {
+        return open_status;
+    }
+
+    public void setOpen_status(int open_status) {
+        this.open_status = open_status;
+    }
 
     public String getLandmarks() {
         return landmarks;

@@ -79,7 +79,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         CategoryModel model = list.get(position);
 
 
-        viewHolder.txt_name.setText(model.getName());
+        viewHolder.txt_name.setText(model.getName() +" (Order : "+model.getOrder()+")");
         viewHolder.sw_status.setOnCheckedChangeListener(null);
         if(model.getStatus()==0){
             viewHolder.sw_status.setChecked(false);

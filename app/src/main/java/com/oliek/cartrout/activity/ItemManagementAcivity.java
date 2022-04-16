@@ -16,6 +16,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,6 +30,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -42,6 +45,7 @@ import com.oliek.cartrout.adapters.CategoryListAdapter;
 import com.oliek.cartrout.adapters.ProductListAdapter;
 import com.oliek.cartrout.base.BaseActivity;
 import com.oliek.cartrout.callback.RecycleViewItemCallBack;
+import com.oliek.cartrout.dialogue.DialogCategoryEdit;
 import com.oliek.cartrout.model.CategoryModel;
 import com.oliek.cartrout.model.PendingOrderModel;
 import com.oliek.cartrout.model.ProductModel;
@@ -71,7 +75,6 @@ import static com.oliek.cartrout.GlobalConstants.TAG;
 
 public class ItemManagementAcivity extends BaseActivity implements View.OnClickListener , RecycleViewItemCallBack {
 
-ArrayList<ProductModel> productModels;
     public static final String MyPref="info";
     private String key;
     LinearLayoutManager linearLayoutManager;
@@ -79,7 +82,7 @@ ArrayList<ProductModel> productModels;
     private static final int PAGE_START = 1;
     private boolean isLoading = false;
     private boolean isLastPage = false;
-
+    DialogCategoryEdit dialogCategoryEdit;
     private String NEXT_URL ;
     private int TOTAL_PAGES ;
 
@@ -94,13 +97,14 @@ ArrayList<ProductModel> productModels;
     private String titil;
     private Button[] btn = new Button[3];
     private Button btn_unfocus;
-    private int[] btn_id = {R.id.btn0, R.id.btn1, R.id.btn2};
 
     String searchKey="",category,categorySlug,status="";
     EditText edt_search;
-    Button btn_search;
+    ImageView btn_search,cat_edit;
     CategoryModel model;
     ProductListAdapter productListAdapter;
+    private ArrayList<ProductModel> arrayListfull;
+    private ArrayList<ProductModel> serch=new ArrayList<>();
     private PreferenceService sh;
     private ApiInterface apiService;
     private UserModel user;
@@ -141,13 +145,51 @@ ArrayList<ProductModel> productModels;
         no_connection=findViewById(R.id.no_connection);
         btn_tryagain=findViewById(R.id.btn_tryagain);
         btn_search=findViewById(R.id.btn_search);
+        cat_edit=findViewById(R.id.cat_edit);
+
         edt_search=findViewById(R.id.edt_search);
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                serch.clear();
+                serch.addAll(arrayListfull);
+                if (s.toString().length()==0) {
+                    serch.clear();
+                    serch.addAll(arrayListfull);
+                }else {
+                    serch.clear();
+                    for (int i = 0; i < arrayListfull.size(); i++) {
+
+                        String name= arrayListfull.get(i).getName();
+                        String dd= arrayListfull.get(i).getPrice()+"";
+                        String pris= arrayListfull.get(i).getOffer_price()+"";
+
+                        if (name.toLowerCase().contains(s.toString().toLowerCase())||dd.toLowerCase().contains(s.toString().toLowerCase())||pris.toLowerCase().contains(s.toString().toLowerCase())) {
+                            serch.add(arrayListfull.get(i));
+                        }
+
+                    }
+                }
+                initRecyclerView(serch);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         txt_category=findViewById(R.id.txt_category);
         btn_search.setOnClickListener(this);
         lyt_orders.setOnClickListener(this);
         lyt_home.setOnClickListener(this);
         lyt_menu.setOnClickListener(this);
-
+        cat_edit.setOnClickListener(this);
         txt_category.setText(model.getName());
 
         recyclerView = (RecyclerView) findViewById(R.id.rec_menumanage);
@@ -155,33 +197,21 @@ ArrayList<ProductModel> productModels;
         layoutManagerNewsTrending.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManagerNewsTrending);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                layoutManagerNewsTrending.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
+//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+//                layoutManagerNewsTrending.getOrientation());
+//        recyclerView.addItemDecoration(dividerItemDecoration);
 
 
 
         btn_tryagain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                loadFirstPage(searchKey,categorySlug,status);
                 getOrderCount();
                 no_connection.setVisibility(View.GONE);
             }
         });
-        for(int i = 0; i < btn.length; i++){
-            btn[i] = (Button) findViewById(btn_id[i]);
-            btn[i].setBackgroundResource(R.drawable.button_border_ltgrey);
 
-            //btn[i].setBackgroundColor(Color.rgb(207, 207, 207));
-            btn[i].setOnClickListener(this);
-        }
-        btn[0].setText("All");
-        btn[1].setText("Active");
-        btn[2].setText("Inactive");
 
-        btn_unfocus = btn[0];
-        setFocus(btn_unfocus, btn[0],"All");
 
         getItemList();
         getOrdercount();
@@ -240,7 +270,7 @@ ArrayList<ProductModel> productModels;
             public void onResponse(Call<ProductsResponseModel> call, Response<ProductsResponseModel> response) {
                 if (response.isSuccessful()&&response.body()!=null) {
                     if(response.body().isSuccess()){
-
+                    arrayListfull=response.body().getProducts();
                         initRecyclerView(response.body().getProducts());
 
                     }else {
@@ -266,9 +296,8 @@ ArrayList<ProductModel> productModels;
 
     }
     private void initRecyclerView(ArrayList<ProductModel> arrayList) {
-        productModels=arrayList;
         if (arrayList != null&&arrayList.size()!=0) {
-            productListAdapter = new ProductListAdapter(this, productModels, this);
+            productListAdapter = new ProductListAdapter(this, arrayList, this);
             recyclerView.setAdapter(productListAdapter);
             productListAdapter.notifyDataSetChanged();
 //            empty.setVisibility(View.GONE);
@@ -306,74 +335,54 @@ ArrayList<ProductModel> productModels;
                 overridePendingTransition(R.anim.page_in,R.anim.page_out);
 
                 break;*/
-            case R.id.btn0 :
-                setFocus(btn_unfocus, btn[0],"");
-                break;
 
-            case R.id.btn1 :
-
-
-                setFocus(btn_unfocus, btn[1],KEY_ACTVE);
-                break;
-
-            case R.id.btn2 :
-
-                setFocus(btn_unfocus, btn[2],KEY_INACTVE);
-                break;
-            case R.id.btn_search :
-                searchKey=edt_search.getText().toString().trim();
-
+            case R.id.cat_edit:
+                showcat_editpopup();
                 break;
         }
     }
+    private void showcat_editpopup() {
+        dialogCategoryEdit = DialogCategoryEdit.newInstance(this,model);
+        dialogCategoryEdit.setCancelable(false);
+        dialogCategoryEdit.show(getActivity().getFragmentManager(), "terms");
 
+    }
     @Override
     protected void showPopUp() {
 
     }
 
-    private void setFocus(Button btn_unfocus, Button btn_focus,String Status){
-        btn_unfocus.setBackgroundResource(R.drawable.button_border_ltgrey);
-        btn_unfocus.setTextColor(Color.rgb(49, 50, 51));
-        btn_focus.setTextColor(Color.rgb(49, 50, 51));
-      //  btn_focus.setTextColor(Color.rgb(255, 255, 255));
-        btn_focus.setBackgroundResource(R.drawable.button_border_yellow);
-        this.btn_unfocus = btn_focus;
-        searchKey=edt_search.getText().toString().trim();
-
-        getfilterdata(searchKey,categorySlug,Status);
 
 
-    }
-
-    private void getfilterdata(String searchKey, String categorySlug, String status) {
-        ArrayList<ProductModel> productlist=new ArrayList<>();
-        if(productModels!=null) {
-            for (int i = 0; i < productModels.size(); i++) {
-                ProductModel productModel = productModels.get(i);
-                if (status.equals("")) {
-                    if (productModel.getName().toLowerCase().contains(searchKey.toLowerCase())) {
-                        productlist.add(productModel);
-                    }
-                } else {
-                   String productstatus=productModel.getStatus()+"";
-                    if (productModel.getName().toLowerCase().contains(searchKey.toLowerCase()) && productstatus.equals(status)) {
-                        productlist.add(productModel);
-                    }
-                }
-            }
-            productListAdapter.updateData(productlist);
-            productListAdapter.notifyDataSetChanged();
-        }
-    }
 
 
-    private void loadNextPage() {
-
-    }
 
     private void getOrderCount() {
+        String url = GlobalConstants.BASE_URL + "getordercount/?token="+user.getApi_tocken()+"&entity_id="+user.getEntity().getId();
+        showProgressDialog(true);
+        Call<OrderCountResponseModel> call = apiService.getordercount(url);
+        call.enqueue(new Callback<OrderCountResponseModel>() {
+            @Override
+            public void onResponse(Call<OrderCountResponseModel> call, Response<OrderCountResponseModel> response) {
+                if (response.isSuccessful()&&response.body()!=null) {
+                    if(response.body().isSuccess()){
+                        setOrderCount(response.body().getCount());
+                    }else {
+                        Toast.makeText(ItemManagementAcivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
 
+
+                } else {
+                    Toast.makeText(ItemManagementAcivity.this, GlobalConstants.NO_INTERNET, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OrderCountResponseModel> call, Throwable t) {
+                Toast.makeText(ItemManagementAcivity.this, GlobalConstants.NO_INTERNET, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, t.toString());
+            }
+        });
     }
 
     private void itemStatus(int itemID) {
@@ -431,6 +440,15 @@ ArrayList<ProductModel> productModels;
     }
     @Override
     public void onItemClick(Object data, Object sender) {
+        if (sender.equals(GlobalConstants.DATA)) {
+            CategoryModel model = (CategoryModel) data;
+            updatecatagory(model);
+        }
+        else if (sender.equals("Closs")) {
+            dialogCategoryEdit.dismiss();
+        }
+
+
 //        if (sender.equals(GlobalConstants.VIEW)) {
 //
 //            CategoryModel model = (CategoryModel) data;
@@ -453,6 +471,46 @@ ArrayList<ProductModel> productModels;
 
     }
 }
+
+    private void updatecatagory(CategoryModel categoryModel) {
+
+            String url = GlobalConstants.BASE_URL + "categoryedit/?token="+user.getApi_tocken()+"&id="+categoryModel.getId()+"&name="+categoryModel.getName()+"&order="+categoryModel.getOrder();
+            showProgressDialog(true);
+            Call<BaseResponse> call = apiService.categorysedit(url);
+            call.enqueue(new Callback<BaseResponse>() {
+                @Override
+                public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                    if (response.isSuccessful()&&response.body()!=null) {
+                        if(response.body().isSuccess()){
+                    model=categoryModel;
+                            txt_category.setText(model.getName());
+
+                        }else {
+                            Toast.makeText(ItemManagementAcivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+                        }
+
+
+                    } else {
+                        Toast.makeText(ItemManagementAcivity.this, GlobalConstants.NO_INTERNET, Toast.LENGTH_SHORT).show();
+                    }
+                    dialogCategoryEdit.dismiss();
+                    showProgressDialog(false);
+
+                }
+
+                @Override
+                public void onFailure(Call<BaseResponse> call, Throwable t) {
+                    Toast.makeText(ItemManagementAcivity.this, GlobalConstants.NO_INTERNET, Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, t.toString());
+                    dialogCategoryEdit.dismiss();
+                    showProgressDialog(false);
+
+                }
+            });
+
+
+    }
 
     private void productstatusedit(int id, int i) {
         String url = GlobalConstants.BASE_URL + "productstatusedit/?token="+user.getApi_tocken()+"&id="+id+"&status="+i;

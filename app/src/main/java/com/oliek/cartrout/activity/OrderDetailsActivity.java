@@ -7,7 +7,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
@@ -15,6 +18,7 @@ import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -31,6 +35,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -73,16 +78,16 @@ public class OrderDetailsActivity extends BaseActivity implements RecycleViewIte
     private ImageView img_call;
     private TextView txt_status, txt_menu_qty, txt_total_rate;
     String staff_phone;
-    Button btn_accept, btn_delivered,btn_reject;
-    LinearLayout lyt_accpet_reject,ll_home_d,llcall;
+    Button btn_accept, btn_delivered,btn_redytopic, btn_reject;
+    LinearLayout lyt_accpet_reject, ll_home_d, llcall;
     CartItamAdapter cartItamAdapter;
     ItemDialog itamdialoge;
     private int resid, userID;
     private String key;
     int orderId;
-     Dialog review_popup,add_popup,edit_popup;
-    TextView txt_ordercount, txt_excl_rate, txt_tax_rate, txt_packingcharge, txt_disc_amnt,txt_itam_total,txt_delivery_charge;
-TextView txttv,txthd,txt_address,txt_landmarks;
+    Dialog review_popup, add_popup, edit_popup;
+    TextView txt_ordercount, txt_excl_rate, txt_tax_rate, txt_packingcharge, txt_disc_amnt, txt_itam_total, txt_delivery_charge;
+    TextView txttv, txthd, txt_address, txt_landmarks;
     private PreferenceService sh;
     private ApiInterface apiService;
     private UserModel user;
@@ -93,13 +98,16 @@ TextView txttv,txthd,txt_address,txt_landmarks;
     private UsbInterface mInterface;
     private UsbEndpoint mEndPoint;
     private PendingIntent mPermissionIntent;
-ImageButton add_itam;
+    ImageButton add_itam;
+    LinearLayout ll_share;
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
     private static final Boolean forceCLaim = true;
     OrderModel model;
+    ImageView ic_whadsapp;
     HashMap<String, UsbDevice> mDeviceList;
     Iterator<UsbDevice> mDeviceIterator;
     RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,9 +129,9 @@ ImageButton add_itam;
         ll_home_d = findViewById(R.id.ll_home_d);
         lyt_status_btn = findViewById(R.id.lyt_status_btn);
         txt_landmarks = findViewById(R.id.txt_landmarks);
-        txt_address= findViewById(R.id.txt_address);
-        txttv= findViewById(R.id.txt_tk);
-        txthd= findViewById(R.id.txt_hd);
+        txt_address = findViewById(R.id.txt_address);
+        txttv = findViewById(R.id.txt_tk);
+        txthd = findViewById(R.id.txt_hd);
         lyt_accpet_reject = findViewById(R.id.lyt_accpet_reject);
         lyt_orders = findViewById(R.id.lyt_orders);
         lyt_home = findViewById(R.id.lyt_home);
@@ -137,8 +145,9 @@ ImageButton add_itam;
         txt_menu_qty = findViewById(R.id.txt_menu_qty);
         txt_total_rate = findViewById(R.id.txt_total_rate);
         btn_accept = findViewById(R.id.btn_accept);
-        btn_reject= findViewById(R.id.btn_reject);
+        btn_reject = findViewById(R.id.btn_reject);
         btn_delivered = findViewById(R.id.btn_delivered);
+        btn_redytopic= findViewById(R.id.btn_redytopic);
         txt_ordercount = findViewById(R.id.txt_ordercount);
         txt_itam_total = findViewById(R.id.txt_itam_total);
         txt_delivery_charge = findViewById(R.id.txt_delivery_charge);
@@ -148,7 +157,7 @@ ImageButton add_itam;
         menuList = new ArrayList<>();
 
         pbLoadCast = findViewById(R.id.pb_cast_loading);
-        orderId =model.getId();
+        orderId = model.getId();
         recyclerView.setLayoutManager(layoutManagerNewsTrending);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
@@ -160,22 +169,88 @@ ImageButton add_itam;
         btn_accept.setOnClickListener(this);
         btn_reject.setOnClickListener(this);
         btn_delivered.setOnClickListener(this);
-        add_itam= findViewById(R.id.add_itam);
+        btn_redytopic.setOnClickListener(this);
+        add_itam = findViewById(R.id.add_itam);
         add_itam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               getProductLit();
+                getProductLit();
 
             }
         });
+        ic_whadsapp = findViewById(R.id.ic_whadsapp);
+        ic_whadsapp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String toNumber = user.getEntity().getCountry().getCountry_mobile_code() + model.getMobil();
+                // contains spaces.
+                toNumber = toNumber.replace("+", "").replace(" ", "");
+                String status = "";
+                String message = "";
+                if (model.getStatus() == 0) {
+
+                    status = "Placed";
 
 
+                } else if (model.getStatus() == 1) {
+                    status = "Confirmed";
+
+                } else if (model.getStatus() == 4) {
+                    if (model.getDelivery_type() == 0) {
+                        status = "Ready to Pick Up";
+
+                    }
+                    else if (model.getDelivery_type() == 1) {
+                        status = "Out For Delivery";
+                    }
+
+                }else if (model.getStatus() == 3) {
+                    status = "Cancelled";
+
+                } else if (model.getStatus() == 2) {
+
+                    status = "Delivered";
+                }
+                if (model.getDelivery_type() == 1) {
+                    message = "#" + model.getInvoiceno() + "\n" + model.getName() + "\n" + model.getMobil() + "\n*Address* : " + model.getAddress() + "\n*Landmarks* : " + model.getLocetion_link() + "\nTotal = " + model.getTotal() + "\n\n *Status :* " + status;
+
+                } else {
+                    message = "#" + model.getInvoiceno() + "\n" + model.getName() + "\nTotal = " + model.getTotal() + "\n\n *Status :* " + status;
+
+                }
+
+                Intent sendIntent = new Intent("android.intent.action.MAIN");
+                sendIntent.putExtra("jid", toNumber + "@s.whatsapp.net");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, message);
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.setPackage("com.whatsapp");
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+
+            }
+
+        });
+        ll_share = findViewById(R.id.ll_share);
+        ll_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "#" + model.getInvoiceno() + "\n" + model.getName() + "\n" + model.getMobil() + "\n*Address* : " + model.getAddress() + "\n*Landmarks* : " + model.getLocetion_link() + "\nTotal = " + model.getTotal());
+                sendIntent.setType("text/plain");
+
+                Intent shareIntent = Intent.createChooser(sendIntent, null);
+                startActivity(shareIntent);
+
+            }
+        });
         llcall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!staff_phone.equals("")) {
+                if (!model.getMobil().equals("")) {
                     Intent intent = new Intent(Intent.ACTION_DIAL);
-                    intent.setData(Uri.parse("tel:" + staff_phone));
+                    intent.setData(Uri.parse("tel:" + model.getMobil()));
                     startActivity(intent);
                     overridePendingTransition(R.anim.page_in, R.anim.page_out);
 
@@ -191,20 +266,21 @@ ImageButton add_itam;
 
     }
 
+
     private void getProductLit() {
 
-        String url = GlobalConstants.BASE_URL + "getproductnactiv/?token="+user.getApi_tocken()+"&entity_id="+user.getEntity().getId();
+        String url = GlobalConstants.BASE_URL + "getproductnactiv/?token=" + user.getApi_tocken() + "&entity_id=" + user.getEntity().getId();
         showProgressDialog(true);
         Call<ProductsResponseModel> call = apiService.getproductnactiv(url);
         call.enqueue(new Callback<ProductsResponseModel>() {
             @Override
             public void onResponse(Call<ProductsResponseModel> call, Response<ProductsResponseModel> response) {
-                if (response.body()!=null) {
-                    if(response.body().isSuccess()){
+                if (response.body() != null) {
+                    if (response.body().isSuccess()) {
 
                         showpopupProduvt(response.body().getProducts());
 
-                    }else {
+                    } else {
                         Toast.makeText(OrderDetailsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         showProgressDialog(false);
                     }
@@ -228,8 +304,8 @@ ImageButton add_itam;
 
 
     private void initRecyclerView(ArrayList<CartModel> arrayList) {
-        if (arrayList != null&&arrayList.size()!=0) {
-            cartItamAdapter = new CartItamAdapter(this, arrayList,this);
+        if (arrayList != null && arrayList.size() != 0) {
+            cartItamAdapter = new CartItamAdapter(this, arrayList, this);
             recyclerView.setAdapter(cartItamAdapter);
             cartItamAdapter.notifyDataSetChanged();
 //            empty.setVisibility(View.GONE);
@@ -237,8 +313,7 @@ ImageButton add_itam;
             showProgressDialog(false);
 
 
-
-        }else {
+        } else {
 //            empty.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
             showProgressDialog(false);
@@ -247,19 +322,19 @@ ImageButton add_itam;
     }
 
     private void getdata() {
-        String url = GlobalConstants.BASE_URL + "getorderdetail/?token="+user.getApi_tocken()+"&order_id="+model.getId();
+        String url = GlobalConstants.BASE_URL + "getorderdetail/?token=" + user.getApi_tocken() + "&order_id=" + model.getId();
         showProgressDialog(true);
         Call<OrderViewResponseModel> call = apiService.getorderdetail(url);
         call.enqueue(new Callback<OrderViewResponseModel>() {
             @Override
             public void onResponse(Call<OrderViewResponseModel> call, Response<OrderViewResponseModel> response) {
-                if (response.isSuccessful()&&response.body()!=null) {
-                    if(response.body().isSuccess()){
-                        model=response.body().getOrder();
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().isSuccess()) {
+                        model = response.body().getOrder();
                         setDataToView(model);
 
                         initRecyclerView(response.body().getOrder().getCarts());
-                    }else {
+                    } else {
                         Toast.makeText(OrderDetailsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         showProgressDialog(false);
 
@@ -284,33 +359,33 @@ ImageButton add_itam;
 
     }
 
-    private void setOrderCount(int count ) {
-        if (count>0){
+    private void setOrderCount(int count) {
+        if (count > 0) {
             Animation shake;
             shake = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shake);
             lyt_orders.startAnimation(shake);
             Animation myFadeInAnimation = AnimationUtils.loadAnimation(OrderDetailsActivity.this, R.anim.bounce_reverse_count);
             txt_ordercount.startAnimation(myFadeInAnimation);
-            txt_ordercount.setText(count+"");
+            txt_ordercount.setText(count + "");
             txt_ordercount.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             txt_ordercount.setVisibility(View.GONE);
         }
     }
 
     private void getOrdercount() {
-        String url = GlobalConstants.BASE_URL + "getordercount/?token="+user.getApi_tocken()+"&entity_id="+user.getEntity().getId();
+        String url = GlobalConstants.BASE_URL + "getordercount/?token=" + user.getApi_tocken() + "&entity_id=" + user.getEntity().getId();
         showProgressDialog(true);
         Call<OrderCountResponseModel> call = apiService.getordercount(url);
         call.enqueue(new Callback<OrderCountResponseModel>() {
             @Override
             public void onResponse(Call<OrderCountResponseModel> call, Response<OrderCountResponseModel> response) {
-                if (response.isSuccessful()&&response.body()!=null) {
-                    if(response.body().isSuccess()){
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().isSuccess()) {
                         setOrderCount(response.body().getCount());
                         showProgressDialog(false);
 
-                    }else {
+                    } else {
                         Toast.makeText(OrderDetailsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         showProgressDialog(false);
 
@@ -334,21 +409,21 @@ ImageButton add_itam;
         });
 
 
-
     }
-
-
-
-
-
-
 
 
     public void setDataToView(OrderModel model) {
 
         txt_orderno.setText(model.getInvoiceno() + "");
-        txt_date_time.setText(model.getTime() + model.getDiff());
-        txt_name.setText("name : " + model.getName());
+        txt_date_time.setText(model.getTime() + " " + model.getDiff());
+        if (model.getCustomer_status() == 0) {
+            txt_name.setTextColor(Color.RED);
+            txt_name.setText("name : " + model.getName() + "(" + model.getMobil() + ")");
+
+        } else {
+            txt_name.setText("name : " + model.getName() + "(" + model.getMobil() + ")" + " - " + model.getCustomer_status());
+
+        }
 
         if (model.getStatus() == 0) {
             txt_status.setTextColor(getResources().getColor(R.color.confrimed));
@@ -363,18 +438,49 @@ ImageButton add_itam;
         } else if (model.getStatus() == 1) {
             txt_status.setTextColor(getResources().getColor(R.color.picked));
             txt_status.setText("Confirmed");
-            btn_delivered.setVisibility(View.VISIBLE);
+            if (model.getDelivery_type() == 0) {
+                btn_redytopic.setText("Ready to Pick Up");
+            }
+            else if (model.getDelivery_type() == 1) {
+                btn_redytopic.setText("Out For Delivery");
+            }
+
+            btn_redytopic.setVisibility(View.VISIBLE);
+            btn_redytopic.setBackgroundColor(this.getResources().getColor(R.color.redytopic));
+            btn_delivered.setVisibility(View.GONE);
             lyt_accpet_reject.setVisibility(View.VISIBLE);
             btn_reject.clearAnimation();
             Animation myFadeInAnimation = AnimationUtils.loadAnimation(OrderDetailsActivity.this, R.anim.bounce_reverse);
             btn_accept.setVisibility(View.GONE);
             btn_accept.clearAnimation();
 
-            btn_delivered.startAnimation(myFadeInAnimation);
-
+            btn_redytopic.startAnimation(myFadeInAnimation);
             Animation myFadeInAnimation2 = AnimationUtils.loadAnimation(OrderDetailsActivity.this, R.anim.bounce_reverse);
 
             btn_reject.startAnimation(myFadeInAnimation2);
+        }else if (model.getStatus() == 4) {
+            txt_status.setTextColor(getResources().getColor(R.color.redytopic));
+            if (model.getDelivery_type() == 0) {
+                txt_status.setText("Ready to Pick Up");
+                btn_redytopic.setText("Ready to Pick Up");
+            }
+            else if (model.getDelivery_type() == 1) {
+                txt_status.setText("Out For Delivery");
+                btn_redytopic.setText("Out For Delivery");
+            }
+            btn_delivered.setVisibility(View.VISIBLE);
+            btn_redytopic.setVisibility(View.GONE);
+
+            lyt_accpet_reject.setVisibility(View.VISIBLE);
+            btn_reject.clearAnimation();
+            Animation myFadeInAnimation = AnimationUtils.loadAnimation(OrderDetailsActivity.this, R.anim.bounce_reverse);
+            btn_accept.setVisibility(View.GONE);
+            btn_accept.clearAnimation();
+            btn_delivered.startAnimation(myFadeInAnimation);
+            Animation myFadeInAnimation2 = AnimationUtils.loadAnimation(OrderDetailsActivity.this, R.anim.bounce_reverse);
+
+            btn_reject.startAnimation(myFadeInAnimation2);
+
         } else if (model.getStatus() == 3) {
             txt_status.setTextColor(getResources().getColor(R.color.cancelled));
             txt_status.setText("Cancelled");
@@ -399,13 +505,15 @@ ImageButton add_itam;
         }
         if (model.getDelivery_type() == 0) {
             txttv.setVisibility(View.VISIBLE);
+            ll_home_d.setVisibility(View.GONE);
+
             txthd.setVisibility(View.GONE);
         } else if (model.getDelivery_type() == 1) {
             txttv.setVisibility(View.GONE);
             txthd.setVisibility(View.VISIBLE);
             ll_home_d.setVisibility(View.VISIBLE);
             txt_address.setText(model.getAddress());
-            txt_landmarks.setText(model.getLandmarks());
+            txt_landmarks.setText(model.getLocetion_link());
         }
         txt_itam_total.setText(model.getTotal());
         if (model.getDelivery_charge().equals("0")) {
@@ -421,9 +529,6 @@ ImageButton add_itam;
         txt_total_rate.setText(model.getSubtotal());
         showProgressDialog(false);
     }
-
-
-
 
 
     @Override
@@ -450,15 +555,24 @@ ImageButton add_itam;
 
                 break;
             case R.id.btn_accept:
+                if (model.getCustomer_status() == 0) {
+                    CallcanfomPopup();
+                } else {
+                    orderstatuschange(1);
 
 
-                orderstatuschange(1);
+                }
 
 
                 break;
             case R.id.btn_delivered:
 
                 orderstatuschange(2);
+
+                break;
+            case R.id.btn_redytopic:
+
+                orderstatuschange(4);
 
                 break;
             case R.id.btn_reject:
@@ -468,25 +582,22 @@ ImageButton add_itam;
 
                 break;
 
-
         }
     }
 
 
-
     private void orderstatuschange(int status) {
-        String url = GlobalConstants.BASE_URL + "changeorderstatus/?token="+user.getApi_tocken()+"&order_id="+model.getId()+"&order_status="+status;
+        String url = GlobalConstants.BASE_URL + "changeorderstatus/?token=" + user.getApi_tocken() + "&order_id=" + model.getId() + "&order_status=" + status;
         showProgressDialog(true);
         Call<OrderViewResponseModel> call = apiService.orderstatuschange(url);
         call.enqueue(new Callback<OrderViewResponseModel>() {
             @Override
             public void onResponse(Call<OrderViewResponseModel> call, Response<OrderViewResponseModel> response) {
-                if (response.isSuccessful()&&response.body()!=null) {
-                    if(response.body().isSuccess()){
-                        model=response.body().getOrder();
-                        setDataToView(model );
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().isSuccess()) {
+                        getdata();
 
-                    }else {
+                    } else {
                         Toast.makeText(OrderDetailsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         showProgressDialog(false);
 
@@ -531,7 +642,7 @@ ImageButton add_itam;
 
 
         head.setText("Are you sure to reject the order");
-        content.setText("ID : "+model.getInvoiceno()) ;
+        content.setText("ID : " + model.getInvoiceno());
         review_popup.show();
         cancel_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -558,14 +669,57 @@ ImageButton add_itam;
 
     }
 
+    private void CallcanfomPopup() {
 
+        LayoutInflater layoutInflater = (LayoutInflater) OrderDetailsActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        View popup_view = layoutInflater.inflate(R.layout.reject_popup, null);
+        Popup popup = new Popup();
+        review_popup = popup.dialoglog(OrderDetailsActivity.this, popup_view);
+        review_popup.setCancelable(true);
+        Button cancel_btn = popup_view.findViewById(R.id.cancel_btn);
+        Button btn_positive = popup_view.findViewById(R.id.btn_positive);
+        TextView head = popup_view.findViewById(R.id.head);
+        TextView content = popup_view.findViewById(R.id.popup_txt);
+
+
+        head.setText("better to  conform after a call");
+        content.setText("ID : " + model.getInvoiceno());
+        review_popup.show();
+        cancel_btn.setText("OK,Call");
+        cancel_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                review_popup.dismiss();
+                if (!model.getMobil().equals("")) {
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" + model.getMobil()));
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.page_in, R.anim.page_out);
+
+                }
+
+            }
+        });
+
+        btn_positive.setText("Direct Confirm");
+        btn_positive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                orderstatuschange(1);
+                review_popup.dismiss();
+
+            }
+        });
+    }
 
 
     @Override
     public void onBackPressed() {
 
 
-        Intent i=new Intent(OrderDetailsActivity.this, NewOrderActivity.class);
+        Intent i = new Intent(OrderDetailsActivity.this, NewOrderActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
 
@@ -573,12 +727,14 @@ ImageButton add_itam;
 
 
     }
+
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(R.anim.page_in,R.anim.page_out);
+        overridePendingTransition(R.anim.page_in, R.anim.page_out);
 
     }
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -594,13 +750,12 @@ ImageButton add_itam;
     }
 
 
-
     @Override
     public boolean onPrepareOptionsMenu(android.view.Menu paramMenu) {
-        MenuItem action_cat,action_print;
-        action_cat=paramMenu.findItem(R.id.action_cat);
+        MenuItem action_cat, action_print;
+        action_cat = paramMenu.findItem(R.id.action_cat);
         action_cat.setVisible(false);
-        action_print=paramMenu.findItem(R.id.action_print);
+        action_print = paramMenu.findItem(R.id.action_print);
         action_print.setVisible(false);
         return true;
     }
@@ -611,14 +766,14 @@ ImageButton add_itam;
         if (sender.equals(GlobalConstants.EDIT)) {
 
             CartModel model = (CartModel) data;
-           editCartItam(model);
+            editCartItam(model);
 
-        }else if (sender.equals(GlobalConstants.DELETE)) {
+        } else if (sender.equals(GlobalConstants.DELETE)) {
 
             CartModel model = (CartModel) data;
             deleteCartItam(model);
 
-        }else if (sender.equals(GlobalConstants.DATA)) {
+        } else if (sender.equals(GlobalConstants.DATA)) {
 
             ProductModel model = (ProductModel) data;
             addCartItam(model);
@@ -640,7 +795,7 @@ ImageButton add_itam;
 
 
         head.setText(model.getName());
-        content.setText("1") ;
+        content.setText("1");
         add_popup.show();
         cancel_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -654,11 +809,11 @@ ImageButton add_itam;
         btn_positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(content.getText().toString().equals("0")){
+                if (content.getText().toString().equals("0")) {
                     Toast.makeText(OrderDetailsActivity.this, "Quantity cannot be zero", Toast.LENGTH_SHORT).show();
 
-                }else {
-                    addApi(model,content.getText().toString());
+                } else {
+                    addApi(model, content.getText().toString());
                 }
 
             }
@@ -666,20 +821,20 @@ ImageButton add_itam;
     }
 
     private void addApi(ProductModel model, String toString) {
-        String url = GlobalConstants.BASE_URL + "additam/?token="+user.getApi_tocken()+"&add_product_id="+model.getId()+"&order_id="+orderId+"&newcartquantity="+toString;
+        String url = GlobalConstants.BASE_URL + "additam/?token=" + user.getApi_tocken() + "&add_product_id=" + model.getId() + "&order_id=" + orderId + "&newcartquantity=" + toString;
         showProgressDialog(true);
         Call<BaseResponse> call = apiService.additam(url);
         call.enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
-                if (response.isSuccessful()&&response.body()!=null) {
-                    if(response.body().isSuccess()){
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().isSuccess()) {
                         add_popup.dismiss();
                         itamdialoge.dismiss();
 
                         getdata();
 
-                    }else {
+                    } else {
                         showProgressDialog(false);
 
                     }
@@ -716,7 +871,7 @@ ImageButton add_itam;
 
 
         head.setText("Are you sure to DELETE the item");
-        content.setText(model.getProduct_name()) ;
+        content.setText(model.getProduct_name());
         review_popup.show();
         cancel_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -730,24 +885,24 @@ ImageButton add_itam;
         btn_positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            ditletApi(model);
+                ditletApi(model);
             }
         });
     }
 
     private void ditletApi(CartModel model) {
-        String url = GlobalConstants.BASE_URL + "deletecart/?token="+user.getApi_tocken()+"&id="+model.getId();
+        String url = GlobalConstants.BASE_URL + "deletecart/?token=" + user.getApi_tocken() + "&id=" + model.getId();
         showProgressDialog(true);
         Call<BaseResponse> call = apiService.deleteApi(url);
         call.enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
-                if (response.isSuccessful()&&response.body()!=null) {
-                    if(response.body().isSuccess()){
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().isSuccess()) {
                         review_popup.dismiss();
-                    getdata();
+                        getdata();
 
-                    }else {
+                    } else {
                         showProgressDialog(false);
 
                     }
@@ -784,7 +939,7 @@ ImageButton add_itam;
 
 
         head.setText(model.getProduct_name());
-        content.setText(model.getQuantity()+"") ;
+        content.setText(model.getQuantity() + "");
         edit_popup.show();
         cancel_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -798,10 +953,10 @@ ImageButton add_itam;
         btn_positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(content.getText().toString().equals("0")){
+                if (content.getText().toString().equals("0")) {
                     Toast.makeText(OrderDetailsActivity.this, "Quantity cannot be zero", Toast.LENGTH_SHORT).show();
 
-                }else {
+                } else {
                     model.setQuantity(Integer.parseInt(content.getText().toString()));
                     editApi(model);
                 }
@@ -811,18 +966,18 @@ ImageButton add_itam;
     }
 
     private void editApi(CartModel model) {
-        String url = GlobalConstants.BASE_URL + "editcartitam/?token="+user.getApi_tocken()+"&cartid="+model.getId()+"&quantity="+model.getQuantity();
+        String url = GlobalConstants.BASE_URL + "editcartitam/?token=" + user.getApi_tocken() + "&cartid=" + model.getId() + "&quantity=" + model.getQuantity();
         showProgressDialog(true);
         Call<BaseResponse> call = apiService.editcartitem(url);
         call.enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
-                if (response.isSuccessful()&&response.body()!=null) {
-                    if(response.body().isSuccess()){
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().isSuccess()) {
                         edit_popup.dismiss();
                         getdata();
 
-                    }else {
+                    } else {
                         showProgressDialog(false);
 
                     }
@@ -844,11 +999,12 @@ ImageButton add_itam;
             }
         });
     }
+
     private void showpopupProduvt(ArrayList<ProductModel> productModels) {
-        itamdialoge = ItemDialog.newInstance(this, this,productModels);
+        itamdialoge = ItemDialog.newInstance(this, this, productModels);
         itamdialoge.show(getActivity().getFragmentManager(), "terms");
         showProgressDialog(false);
 
-    }
 
+    }
 }

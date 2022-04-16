@@ -51,6 +51,9 @@ public interface ApiInterface {
     Call<BaseResponse> categorystatusedit(@Url String url);
 
     @GET()
+    Call<BaseResponse> categorysedit(@Url String url);
+
+    @GET()
     Call<ProductsResponseModel> getproduct(@Url String url);
 
     @GET()

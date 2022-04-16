@@ -134,9 +134,9 @@ public class Dashboard extends BaseFragment implements View.OnClickListener , Re
         layoutManagerNewsTrending.setOrientation(LinearLayoutManager.VERTICAL);
         rec_recentorders.setLayoutManager(layoutManagerNewsTrending);
         rec_recentorders.setItemAnimator(new DefaultItemAnimator());
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rec_recentorders.getContext(),
-                layoutManagerNewsTrending.getOrientation());
-        rec_recentorders.addItemDecoration(dividerItemDecoration);
+//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rec_recentorders.getContext(),
+//                layoutManagerNewsTrending.getOrientation());
+//        rec_recentorders.addItemDecoration(dividerItemDecoration);
         rec_bestsaleitems=view.findViewById(R.id.rec_bestsaleitems);
         LinearLayoutManager layoutManagerNewsTrending2 = new LinearLayoutManager(getContext());
         layoutManagerNewsTrending.setOrientation(LinearLayoutManager.VERTICAL);
@@ -167,7 +167,7 @@ public class Dashboard extends BaseFragment implements View.OnClickListener , Re
     private void setOrderCount(int count ) {
         if (count>0){
             Animation shake;
-            shake = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
+            shake = AnimationUtils.loadAnimation(this.getActivity(), R.anim.shake);
             lyt_orders.startAnimation(shake);
             Animation myFadeInAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce_reverse_count);
             txt_ordercount.startAnimation(myFadeInAnimation);

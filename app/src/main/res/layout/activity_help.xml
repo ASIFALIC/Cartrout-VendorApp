@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/main_content">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/lyt_bottom"
+        android:id="@+id/main_layout">
+            <LinearLayout
+                android:id="@+id/lyt_top"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+
+                android:background="@color/white"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="90dp"
+                    android:scaleType="fitXY"
+                    android:background="@drawable/logobw">
+                </ImageView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:drawablePadding="6dp"
+                    android:text="Help Desk : ">
+                </TextView>
+                <LinearLayout
+                    android:id="@+id/ll_whadsap"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:drawablePadding="6dp"
+                        android:text="@string/help_desk_no">
+                    </TextView>
+                    <ImageView
+                        android:layout_marginLeft="@dimen/textsize_10"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/whatsup">
+                    </ImageView>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_mail"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:drawablePadding="6dp"
+                        android:text="@string/helpdesk_mail_id">
+                    </TextView>
+                    <ImageView
+                        android:layout_marginLeft="@dimen/textsize_10"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/ic_email">
+                    </ImageView>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_web"
+                    android:gravity="center"
+                    android:padding="10dp"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:drawablePadding="6dp"
+                        android:text="www.cartroot.com">
+                    </TextView>
+                    <ImageView
+                        android:layout_marginLeft="@dimen/textsize_10"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/ic_web_browser">
+                    </ImageView>
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/txt_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                </TextView>
+            </LinearLayout>
+
+    </ScrollView>
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_above="@id/lyt_bottom"
+        android:id="@+id/no_connection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <include
+            layout="@layout/no_internert"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lyt_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
+
+
+
+        <include layout="@layout/layout_bottom" />
+    </LinearLayout>
+
+
+</RelativeLayout>

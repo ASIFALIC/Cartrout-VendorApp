@@ -50,14 +50,13 @@ public class GeneralSettings extends BaseActivity implements View.OnClickListene
     LinearLayout lyt_home, lyt_menu, lyt_orders;
     Switch sw_status, sw_busy;
     TextView txt_ordercount;
-    LinearLayout ll_whatsup, ll_mail, ll_web;
 
 
     ScrollView main_layout;
     LinearLayout no_connection;
     Button btn_tryagain;
 
-    TextView txt_version,date, txt_helpdesk, txt_r_busy, txt_r_status;
+    TextView date, txt_helpdesk, txt_r_busy, txt_r_status;
     String changed = "N";
     String help_desk_no;
     private PreferenceService sh;
@@ -113,33 +112,11 @@ public class GeneralSettings extends BaseActivity implements View.OnClickListene
         lyt_home = findViewById(R.id.lyt_home);
         lyt_menu = findViewById(R.id.lyt_menu);
         lyt_orders = findViewById(R.id.lyt_orders);
-        txt_version = findViewById(R.id.txt_version);
         txt_ordercount = findViewById(R.id.txt_ordercount);
-        ll_whatsup = findViewById(R.id.ll_whadsap);
-        ll_whatsup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openlink("https://wa.me/message/DZME2F7HQ77FO1");
-            }
-        });
 
-        ll_mail = findViewById(R.id.ll_mail);
-        ll_mail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openlink("mailto:info@cartrout.com");
-            }
-        });
 
-        ll_web = findViewById(R.id.ll_web);
-        ll_web.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                openlink("https://cartrout.com/");
-            }
-        });
-        txt_version.setText("Version : " + BuildConfig.VERSION_NAME);
+
         getOrdercount();
         setView();
     }
@@ -350,7 +327,7 @@ public class GeneralSettings extends BaseActivity implements View.OnClickListene
     }
 
     private void updateBusyStatus(int status) {
-        String url = GlobalConstants.BASE_URL + "busystatusedit/?token="+user.getApi_tocken()+"&entity_id="+user.getEntity().getId()+"&is_it_open="+status;
+        String url = GlobalConstants.BASE_URL + "busystatusedit/?token="+user.getApi_tocken()+"&entity_id="+user.getEntity().getId()+"&is_it_busy="+status;
         showProgressDialog(true);
         Call<BaseResponse> call = apiService.updateBusyStatus(url);
         call.enqueue(new Callback<BaseResponse>() {

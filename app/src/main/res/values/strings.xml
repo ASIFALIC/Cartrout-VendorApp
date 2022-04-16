@@ -44,6 +44,7 @@
     <string name="order_management">ORDER MANAGEMENT</string>
     <string name="category_management">CATEGORY MANAGEMENT</string>
     <string name="general_settings">GENERAL SETTINGS</string>
+    <string name="help">HELP</string>
     <string name="reviews">REVIEWS</string>
     <string name="notification">NOTIFICATION</string>
     <string name="logout">LOGOUT</string>

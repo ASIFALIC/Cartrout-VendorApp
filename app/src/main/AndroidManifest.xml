@@ -16,8 +16,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:exported="true"
+
         android:theme="@style/AppTheme">
         <activity android:name=".activity.GeneralSettings"></activity>
+        <activity android:name=".activity.HelpActivity"></activity>
 
         <uses-library android:name="com.android.future.usb.accessory" />
 
@@ -27,7 +30,9 @@
         <activity
             android:name=".activity.NavigationActivity"
             android:label="@string/title_activity_navigation"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
         <activity android:name=".activity.ItemCatAcivity">
 
         </activity>
@@ -37,6 +42,7 @@
 
         <activity
             android:name=".activity.SplashActivity"
+            android:exported="true"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,7 +51,10 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".Firebase.MyFirebaseMessagingService">
+        <service android:name=".Firebase.MyFirebaseMessagingService"
+            android:exported="true"
+            >
+
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

@@ -86,7 +86,6 @@ public class ItemCatAcivity extends BaseActivity implements View.OnClickListener
         SharedPreferences.Editor editor= sp.edit();
         Intent mIntent = getIntent();
         user = PreferenceService.getInstance(this).getUser();
-        user.setUser_type(4);
 
         if(user.getUser_type()==4){
             AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -124,9 +123,9 @@ public class ItemCatAcivity extends BaseActivity implements View.OnClickListener
         layoutManagerNewsTrending.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManagerNewsTrending);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                layoutManagerNewsTrending.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
+//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+//                layoutManagerNewsTrending.getOrientation());
+//        recyclerView.addItemDecoration(dividerItemDecoration);
         main_content.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

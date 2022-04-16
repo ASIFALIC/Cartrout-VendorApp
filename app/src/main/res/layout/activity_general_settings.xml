@@ -16,107 +16,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
-            <LinearLayout
-                android:id="@+id/lyt_top"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="10dp"
 
-                android:background="@color/white"
-                android:gravity="center">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="90dp"
-                    android:scaleType="fitXY"
-                    android:background="@drawable/logobw">
-                </ImageView>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:drawablePadding="6dp"
-                    android:text="Help Desk : ">
-                </TextView>
-                <LinearLayout
-                    android:id="@+id/ll_whadsap"
-                    android:gravity="center"
-                    android:padding="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:drawablePadding="6dp"
-                        android:text="@string/help_desk_no">
-                    </TextView>
-                    <ImageView
-                        android:layout_marginLeft="@dimen/textsize_10"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:background="@drawable/whatsup">
-                    </ImageView>
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/ll_mail"
-                    android:gravity="center"
-                    android:padding="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:drawablePadding="6dp"
-                        android:text="@string/helpdesk_mail_id">
-                    </TextView>
-                    <ImageView
-                        android:layout_marginLeft="@dimen/textsize_10"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:background="@drawable/ic_email">
-                    </ImageView>
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/ll_web"
-                    android:gravity="center"
-                    android:padding="10dp"
-
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:drawablePadding="6dp"
-                        android:text="www.cartroot.com">
-                    </TextView>
-                    <ImageView
-                        android:layout_marginLeft="@dimen/textsize_10"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:background="@drawable/ic_web_browser">
-                    </ImageView>
-                </LinearLayout>
-                <TextView
-                    android:id="@+id/txt_version"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                </TextView>
-            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:layout_below="@id/lyt_top"
-                >
+                android:padding="16dp">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
@@ -136,7 +41,7 @@
                                 android:id="@+id/txt_status"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:text="status"
+                                android:text="close"
                                 android:textAllCaps="true"
                                 android:gravity="center|left"
                                 android:textColor="@color/black"
@@ -155,7 +60,7 @@
                                 android:id="@+id/sw_status"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="close"
+                                android:text="OFF"
                                 android:textColor="@color/black"
 
                                 android:textAllCaps="true"

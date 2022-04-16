@@ -141,8 +141,9 @@ public class NavigationActivity extends BaseActivity implements NavigationView.O
             public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
                 if (response.isSuccessful()&&response.body()!=null) {
                     if(response.body().isSuccess()){
-                        UserModel userModel =response.body().getUser();
 
+                        UserModel userModel =response.body().getUser();
+                        userModel.setEntity(user.getEntity());
                         sh.saveUser(GlobalConstants.PREF_KEY_USER, userModel);
                         user_name.setText(userModel.getName());
                         entity_add.setText(userModel.getEntity().getName());
@@ -201,6 +202,14 @@ public class NavigationActivity extends BaseActivity implements NavigationView.O
 
 
         }
+        if (id == R.id.nav_help) {
+            Intent i=new Intent(NavigationActivity.this, HelpActivity.class);
+            startActivity(i);
+            overridePendingTransition(R.anim.page_in,R.anim.page_out);
+
+
+        }
+
         if (id == R.id.nav_tools) {
             Intent i=new Intent(NavigationActivity.this, GeneralSettings.class);
             startActivity(i);

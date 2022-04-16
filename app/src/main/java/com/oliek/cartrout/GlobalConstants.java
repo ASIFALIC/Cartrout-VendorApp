@@ -118,6 +118,8 @@ public class GlobalConstants {
     public static final String KEY_1= "Confirmed";
     public static final String KEY_2= "Delivered";
     public static final String KEY_3="Cancelled";
+    public static final String KEY_4T="Ready to Pick Up";
+    public static final String KEY_4H="Out For Delivery";
 
 
 }

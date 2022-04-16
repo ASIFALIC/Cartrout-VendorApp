@@ -42,12 +42,13 @@ public class NewOrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView txt_orderno,txt_time,txt_order_status;
+        private TextView txt_orderno,txt_time,txt_order_status,tv_new;
         private LinearLayout llItem;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             llItem= (LinearLayout) itemView.findViewById(R.id.llItem);
+            tv_new= (TextView) itemView.findViewById(R.id.tv_new);
             txt_orderno = (TextView) itemView.findViewById(R.id.txt_orderno);
             txt_time = (TextView) itemView.findViewById(R.id.txt_time);
             txt_order_status = (TextView) itemView.findViewById(R.id.txt_order_status);
@@ -86,25 +87,43 @@ public class NewOrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         final MyViewHolder viewHolder = (MyViewHolder) holder;
+        OrderModel model =list.get(position);
+        String time = model.getTime();
 
-        String time = list.get(position).getTime();
+        viewHolder.txt_orderno.setText(model.getInvoiceno());
+            if(model.getOpen_status()==0){
+                viewHolder.tv_new.setVisibility(View.VISIBLE);
+            }else {
+                viewHolder.tv_new.setVisibility(View.GONE);
 
-        viewHolder.txt_orderno.setText(list.get(position).getInvoiceno());
-
-        viewHolder.txt_time.setText(list.get(position).getTime()+list.get(position).getDiff());
-        if(list.get(position).getStatus()==0){
+            }
+        viewHolder.txt_time.setText(model.getTime()+" "+model.getDiff());
+        if(model.getStatus()==0){
             viewHolder.txt_order_status.setText(GlobalConstants.KEY_0);
+            viewHolder.txt_order_status.setTextColor(mContext.getResources().getColor(R.color.red100));
 
         }
-        if(list.get(position).getStatus()==1){
+        else if(model.getStatus()==1){
             viewHolder.txt_order_status.setText(GlobalConstants.KEY_1);
+            viewHolder.txt_order_status.setTextColor(mContext.getResources().getColor(R.color.confrimed));
 
+
+        }
+        else if(model.getStatus()==4){
+            viewHolder.txt_order_status.setTextColor(mContext.getResources().getColor(R.color.redytopic));
+            if(model.getDelivery_type()==0){
+                viewHolder.txt_order_status.setText(GlobalConstants.KEY_4T);
+
+            }else if(model.getDelivery_type()==1){
+                viewHolder.txt_order_status.setText(GlobalConstants.KEY_4H);
+
+            }
         }
 
         viewHolder.llItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mRecycleViewItemCallBack.onItemClick( list.get(position),GlobalConstants.VIEW);
+                mRecycleViewItemCallBack.onItemClick( model,GlobalConstants.VIEW);
             }
         });
 

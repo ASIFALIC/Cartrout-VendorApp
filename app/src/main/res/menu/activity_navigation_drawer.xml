@@ -24,6 +24,10 @@
             android:id="@+id/nav_tools"
             android:icon="@drawable/left_mn_gnrl_settings"
             android:title="@string/general_settings" />
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/ic_cc"
+            android:title="@string/help" />
 <!--        <item-->
 <!--            android:id="@+id/nav_review"-->
 <!--            android:icon="@drawable/left_mn_review"-->

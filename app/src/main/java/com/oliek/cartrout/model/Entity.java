@@ -15,6 +15,15 @@ public class Entity implements Serializable {
     private String expiry_date;
     private String delivery_charge = "0";
     private String packing_charge = "0";
+private Country country;
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
 
     public String getDelivery_charge() {
         return delivery_charge;

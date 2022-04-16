@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -57,6 +58,7 @@ public class LoginActivity extends BaseActivity {
     private ProgressDialog progressDialog;
     ProgressBar progressBar;
     private static final String TAG = "tag";
+    Button bt_enquire;
     TextInputLayout textInputUsername;
     public LoginActivity() {
     }
@@ -76,6 +78,16 @@ public class LoginActivity extends BaseActivity {
         textInputUsername= (TextInputLayout) findViewById(R.id.textInputUsername);
         etUserName = (EditText) findViewById(R.id.et_username);
         etPassword = (EditText) findViewById(R.id.et_password);
+        bt_enquire= (Button) findViewById(R.id.bt_enquire);
+        bt_enquire.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String url = "https://cartrout.com/";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
         fp = (TextView) findViewById(R.id.fp);
         fp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,6 +179,7 @@ public class LoginActivity extends BaseActivity {
 
 
     public void login() {
+        showProgressDialog(true);
 
         Log.d(TAG, new Gson().toJson(loginrequestModel));
         String url = GlobalConstants.BASE_URL + "login/?username="+etUserName.getText().toString()+"&password="+etPassword.getText().toString();
@@ -185,13 +198,15 @@ public class LoginActivity extends BaseActivity {
                         initHome();
                     }else {
                         textInputUsername.setError(response.body().getMessage());
+                        showProgressDialog(false);
 
                     }
 
 
                 } else {
                     Toast.makeText(getActivity(), GlobalConstants.NO_INTERNET, Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.GONE);
+                    showProgressDialog(false);
+
                 }
             }
 
@@ -199,7 +214,8 @@ public class LoginActivity extends BaseActivity {
             public void onFailure(Call<LoginResponseModel> call, Throwable t) {
                 Toast.makeText(getActivity(), GlobalConstants.NO_INTERNET, Toast.LENGTH_SHORT).show();
                 Log.e(TAG, t.toString());
-                progressBar.setVisibility(View.GONE);
+                showProgressDialog(false);
+
             }
         });
     }
@@ -253,14 +269,15 @@ public class LoginActivity extends BaseActivity {
 
 
     public void initHome(){
-        setProgressBar(80);
+        showProgressDialog(true);
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
 
                 Intent intent = new Intent(getApplicationContext(), NavigationActivity.class);
                 startActivity(intent);
-                setProgressBar(100);
+                showProgressDialog(false);
                 finish();
             }
         }, SPLASH_TIME_OUT);

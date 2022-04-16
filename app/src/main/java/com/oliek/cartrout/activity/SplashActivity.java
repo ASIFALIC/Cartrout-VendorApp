@@ -24,7 +24,10 @@ import com.oliek.cartrout.network.ApiInterface;
 import com.oliek.cartrout.preference.PreferenceService;
 import com.oliek.cartrout.utill.Popup;
 
+import pl.droidsonroids.gif.GifImageView;
+
 import static com.oliek.cartrout.GlobalConstants.SPLASH_TIME_OUT;
+import static com.oliek.cartrout.GlobalConstants.VIEW;
 
 
 public class SplashActivity extends BaseActivity {
@@ -48,26 +51,32 @@ public class SplashActivity extends BaseActivity {
     private static final String TAG = "tag";
     ProgressBar progressBar;
 
-
+    GifImageView gif;
+    ImageView image;
+    int SPLASH_TIME_OUT =4100;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        gif = (GifImageView) findViewById(R.id.gif);
+        image = (ImageView) findViewById(R.id.image);
 
         sh= PreferenceService.getInstance(this);
 
         model=sh.getUser();
         if (model==null||model.getApi_tocken()==null){
-
-            initLogin();
+            image.setVisibility(View.GONE);
+            gif.setVisibility(View.VISIBLE);
+            initLogin(4100);
         }else {
-
-            initHome();
+            image.setVisibility(View.VISIBLE);
+            gif.setVisibility(View.GONE);
+            initHome(500);
 
         }
     }
-    public void initHome(){
+    public void initHome(int SPLASH_TIME_OUT){
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -79,7 +88,7 @@ public class SplashActivity extends BaseActivity {
         }, SPLASH_TIME_OUT);
     }
 
-    public void initLogin(){
+    public void initLogin(int SPLASH_TIME_OUT){
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

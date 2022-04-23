@@ -54,7 +54,21 @@
                     android:hint="Name"
                     android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputUsera_name"
+                android:layout_width="match_parent"
+                style="@style/HelperTextAppearance"
 
+
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/eta_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Arabic Name"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textfield.TextInputLayout
 
                 android:layout_width="match_parent"

@@ -5,7 +5,9 @@ import java.io.Serializable;
 public class CategoryModel implements Serializable {
    private  int id;
    private String name;
-   private  int order;
+    private String a_name;
+
+    private  int order;
    private  int entity_id;
     private  int status;
 
@@ -21,6 +23,14 @@ public class CategoryModel implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public String getA_name() {
+        return a_name;
+    }
+
+    public void setA_name(String a_name) {
+        this.a_name = a_name;
     }
 
     public void setName(String name) {

@@ -39,10 +39,12 @@ public class DialogCategoryEdit extends DialogFragment {
         Button dialog_submit = (Button)view.findViewById(R.id.dialog_submit);
         Button dialog_cancel = (Button)view.findViewById(R.id.dialog_cancel);
         EditText name = (EditText)view.findViewById(R.id.et_name);
+        EditText a_name = (EditText)view.findViewById(R.id.eta_name);
+
         TextView tatil = (TextView)view.findViewById(R.id.taitil);
         tatil.setText(categoryModel.getName()+" Edit");
         name.setText(categoryModel.getName());
-
+        a_name.setText(categoryModel.getA_name());
         EditText order = (EditText)view.findViewById(R.id.et_order);
         order.setText(categoryModel.getOrder()+"");
 
@@ -62,6 +64,7 @@ public class DialogCategoryEdit extends DialogFragment {
             public void onClick(View v) {
 
                 categoryModel.setName(name.getText().toString());
+                categoryModel.setA_name(a_name.getText().toString());
                 categoryModel.setOrder(Integer.parseInt(order.getText().toString()));
                 recycleViewItemCallBack.onItemClick(categoryModel,GlobalConstants.DATA);
             }

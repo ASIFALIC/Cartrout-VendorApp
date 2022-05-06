@@ -449,16 +449,16 @@ public class ItemManagementAcivity extends BaseActivity implements View.OnClickL
         }
 
 
-//        if (sender.equals(GlobalConstants.VIEW)) {
-//
-//            CategoryModel model = (CategoryModel) data;
-//            Intent i=new Intent(ItemManagementAcivity.this, ItemManagementAcivity.class);
-//            i.putExtra("name", "ORDER DETAILS");
-//            i.putExtra(GlobalConstants.DATA, model);
-//            startActivity(i);
-//            overridePendingTransition(R.anim.page_in,R.anim.page_out);
-//
-//        }
+        if (sender.equals(GlobalConstants.VIEW)) {
+
+            ProductModel model = (ProductModel) data;
+            Intent i=new Intent(ItemManagementAcivity.this, ProductActivity.class);
+            i.putExtra("name", "ORDER DETAILS");
+            i.putExtra(GlobalConstants.DATA, model);
+            startActivity(i);
+            overridePendingTransition(R.anim.page_in,R.anim.page_out);
+
+        }
     if (sender.equals(GlobalConstants.KEY_ACTVE)) {
 
         ProductModel model = (ProductModel) data;
@@ -474,7 +474,7 @@ public class ItemManagementAcivity extends BaseActivity implements View.OnClickL
 
     private void updatecatagory(CategoryModel categoryModel) {
 
-            String url = GlobalConstants.BASE_URL + "categoryedit/?token="+user.getApi_tocken()+"&id="+categoryModel.getId()+"&name="+categoryModel.getName()+"&order="+categoryModel.getOrder();
+            String url = GlobalConstants.BASE_URL + "categoryedit/?token="+user.getApi_tocken()+"&id="+categoryModel.getId()+"&name="+categoryModel.getName()+"&order="+categoryModel.getOrder()+"&a_name="+categoryModel.getA_name();
             showProgressDialog(true);
             Call<BaseResponse> call = apiService.categorysedit(url);
             call.enqueue(new Callback<BaseResponse>() {
@@ -482,7 +482,7 @@ public class ItemManagementAcivity extends BaseActivity implements View.OnClickL
                 public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                     if (response.isSuccessful()&&response.body()!=null) {
                         if(response.body().isSuccess()){
-                    model=categoryModel;
+                            model=categoryModel;
                             txt_category.setText(model.getName());
 
                         }else {

@@ -6,16 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import com.oliek.cartrout.model.CategoryModel;
 
 import java.util.ArrayList;
 
 
-public class CategorySpinnerAdapter extends ArrayAdapter<String> {
+public class CategorySpinnerAdapter extends ArrayAdapter<CategoryModel> {
 
     private final Context context;
-    private final ArrayList<String> list;
+    private final ArrayList<CategoryModel> list;
 
-    public CategorySpinnerAdapter(Context context, int textViewResourceId, ArrayList<String> list) {
+    public CategorySpinnerAdapter(Context context, int textViewResourceId, ArrayList<CategoryModel> list) {
         super(context,  textViewResourceId, list);
         this.context=context;
         this.list = list;
@@ -27,7 +28,7 @@ public class CategorySpinnerAdapter extends ArrayAdapter<String> {
     }
 
     @Override
-    public String getItem(int position){
+    public CategoryModel getItem(int position){
         return list.get(position);
     }
 
@@ -41,7 +42,7 @@ public class CategorySpinnerAdapter extends ArrayAdapter<String> {
         //view = inflter.inflate(R.layout.spinner_list_taxi, null);
         //TextView names = (TextView) view.findViewById(R.id.taxi_view);
         TextView label = new TextView(context);
-        label.setText(list.get(i));
+        label.setText(list.get(i).getName());
         return label;
     }
 
@@ -54,7 +55,7 @@ public class CategorySpinnerAdapter extends ArrayAdapter<String> {
         label.setTextSize(18);
 
 
-        label.setText(list.get(position));
+        label.setText(list.get(position).getName());
 
         return label;
     }

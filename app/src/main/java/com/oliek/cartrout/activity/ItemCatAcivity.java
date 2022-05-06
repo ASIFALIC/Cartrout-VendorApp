@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +22,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,8 +32,10 @@ import com.oliek.cartrout.R;
 import com.oliek.cartrout.adapters.CategoryListAdapter;
 import com.oliek.cartrout.base.BaseActivity;
 import com.oliek.cartrout.callback.RecycleViewItemCallBack;
+import com.oliek.cartrout.model.CategoriesModel;
 import com.oliek.cartrout.model.CategoryModel;
 import com.oliek.cartrout.model.PendingOrderModel;
+import com.oliek.cartrout.model.ProductModel;
 import com.oliek.cartrout.model.UserModel;
 import com.oliek.cartrout.model.base.BaseResponse;
 import com.oliek.cartrout.model.responsemodel.CategoriesResponseModel;
@@ -65,14 +70,16 @@ public class ItemCatAcivity extends BaseActivity implements View.OnClickListener
 
     LinearLayout lyt_home,lyt_orders,lyt_menu;
     TextView txt_ordercount,txt_count;
-
+    EditText edt_search;
     SwipeRefreshLayout main_content;
     LinearLayout no_connection;
     Button btn_tryagain;
-    private PreferenceService sh;
     private ApiInterface apiService;
     private UserModel user;
+    private PreferenceService preferenceservice;
     CategoryListAdapter categoryListAdapter;
+    private ArrayList<CategoryModel> arrayListfull;
+    private ArrayList<CategoryModel> serch=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,8 +92,45 @@ public class ItemCatAcivity extends BaseActivity implements View.OnClickListener
         SharedPreferences sp=getSharedPreferences(MyPref,MODE_PRIVATE);
         SharedPreferences.Editor editor= sp.edit();
         Intent mIntent = getIntent();
-        user = PreferenceService.getInstance(this).getUser();
+        preferenceservice = PreferenceService.getInstance(this);
+        user = preferenceservice.getUser();
+        edt_search=findViewById(R.id.edt_search);
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                serch.clear();
+                serch.addAll(arrayListfull);
+                if (s.toString().length()==0) {
+                    serch.clear();
+                    serch.addAll(arrayListfull);
+                }else {
+                    serch.clear();
+                    for (int i = 0; i < arrayListfull.size(); i++) {
+
+                        String name= arrayListfull.get(i).getName();
+                        String dd= arrayListfull.get(i).getA_name()+"";
+                        String pris= arrayListfull.get(i).getOrder()+"";
+
+                        if (name.toLowerCase().contains(s.toString().toLowerCase())||dd.toLowerCase().contains(s.toString().toLowerCase())||pris.toLowerCase().contains(s.toString().toLowerCase())) {
+                            serch.add(arrayListfull.get(i));
+                        }
+
+                    }
+                }
+                initRecyclerView(serch);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         if(user.getUser_type()==4){
             AlertDialog.Builder builder = new AlertDialog.Builder(
                     this);
@@ -242,6 +286,10 @@ public class ItemCatAcivity extends BaseActivity implements View.OnClickListener
             public void onResponse(Call<CategoriesResponseModel> call, Response<CategoriesResponseModel> response) {
                 if (response.isSuccessful()&&response.body()!=null) {
                     if(response.body().isSuccess()){
+                        arrayListfull=response.body().getCategories();
+                        CategoriesModel categoriesModel =new CategoriesModel();
+                        categoriesModel.setCategories(arrayListfull);
+                        preferenceservice.savecategories(categoriesModel);
                         initRecyclerView(response.body().getCategories());
 
                     }else {

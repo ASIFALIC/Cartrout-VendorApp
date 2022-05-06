@@ -61,9 +61,9 @@ public class GlobalConstants {
     public static String TAG="tag";
 
     public static int SPLASH_TIME_OUT = 4100;
-
-    public static final String USER_PREFS = "USER_PREFS";
     public static final String PREF_KEY_USER ="pref_key_user";
+    public static final String USER_PREFS = "USER_PREFS";
+    public static final String categories ="categories";
     public static final String PREF_KEY_TOKEN ="pref_key_token";
     public static final String PREF_KEY_SONG ="pref_key_song";
     public static final String SPLASH_BACKGROUND_COUNT = "splash_background_count";

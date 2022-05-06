@@ -78,14 +78,14 @@ public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             viewHolder.sw_status.setChecked(true);
 
         }
-//        viewHolder.crd_main.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                mRecycleViewItemCallBack.onItemClick( list.get(position), GlobalConstants.VIEW);
-//
-//
-//            }
-//        });
+        viewHolder.crd_main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mRecycleViewItemCallBack.onItemClick( list.get(position), GlobalConstants.VIEW);
+
+
+            }
+        });
         viewHolder.sw_status.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 

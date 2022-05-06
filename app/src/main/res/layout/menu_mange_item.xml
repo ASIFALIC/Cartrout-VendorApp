@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:id="@+id/crd_main"
     android:layout_width="match_parent"
-    android:layout_margin="3dp"
     android:layout_height="wrap_content"
-    android:elevation="5dp">
+    android:layout_margin="3dp"
+    android:elevation="5dp"
+    android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="5dp">
 
 
         <LinearLayout
@@ -19,53 +21,59 @@
             android:padding="10dp"
 
             android:weightSum="1">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight=".6"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/txt_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="3dp"
                     android:paddingBottom="3dp"
-                    android:textColor="@color/black"
+                    android:text="Item Name"
 
-                    android:text="Item Name">
+                    android:textColor="@color/black">
 
                 </TextView>
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight=".2"
                 android:gravity="center|right"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/txt_rate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="$320/-">
+                    android:text="$320/-"
+                    android:textColor="@color/black">
 
                 </TextView>
 
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight=".2"
                 android:gravity="center|right"
                 android:orientation="vertical">
+
                 <Switch
-                    android:visibility="visible"
                     android:id="@+id/sw_status"
-                    android:theme="@style/SCBSwitch"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:theme="@style/SCBSwitch"
+                    android:visibility="visible">
 
                 </Switch>
 

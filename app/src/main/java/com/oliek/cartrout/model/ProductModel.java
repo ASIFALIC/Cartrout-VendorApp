@@ -6,16 +6,34 @@ public class ProductModel implements Serializable {
     private  int id;
     private String name;
     private String description;
+    private String a_name;
+    private String a_description;
     private String image;
     private  double price;
     private  double offer_price;
     private  int  order;
     private  int user_id;
     private  int status;
-    private  int webcategory_id;
+    private  int web_product_category_id;
 
     public int getId() {
         return id;
+    }
+
+    public String getA_name() {
+        return a_name;
+    }
+
+    public void setA_name(String a_name) {
+        this.a_name = a_name;
+    }
+
+    public String getA_description() {
+        return a_description;
+    }
+
+    public void setA_description(String a_description) {
+        this.a_description = a_description;
     }
 
     public void setId(int id) {
@@ -86,11 +104,11 @@ public class ProductModel implements Serializable {
         this.status = status;
     }
 
-    public int getWebcategory_id() {
-        return webcategory_id;
+    public int getWeb_product_category_id() {
+        return web_product_category_id;
     }
 
-    public void setWebcategory_id(int webcategory_id) {
-        this.webcategory_id = webcategory_id;
+    public void setWeb_product_category_id(int web_product_category_id) {
+        this.web_product_category_id = web_product_category_id;
     }
 }

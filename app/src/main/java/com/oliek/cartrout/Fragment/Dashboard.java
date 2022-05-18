@@ -184,6 +184,7 @@ public class Dashboard extends BaseFragment implements View.OnClickListener , Re
                 txt_ordercount.startAnimation(myFadeInAnimation);
             }
 
+
             txt_ordercount.setText(count+"");
             showProgressDialog(false);
 

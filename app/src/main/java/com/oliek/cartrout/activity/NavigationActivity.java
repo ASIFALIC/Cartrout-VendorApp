@@ -32,6 +32,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.oliek.cartrout.BuildConfig;
 import com.oliek.cartrout.Fragment.Dashboard;
+import com.oliek.cartrout.Fragment.OrderHistoryFragment;
 import com.oliek.cartrout.GlobalConstants;
 import com.oliek.cartrout.R;
 import com.oliek.cartrout.base.BaseActivity;
@@ -195,14 +196,20 @@ public class NavigationActivity extends BaseActivity implements NavigationView.O
             ft.replace(R.id.content_home,f);
             ft.commit();
         }
-        if (id == R.id.nav_gallery) {
+//        if (id == R.id.nav_history) {
+//            Fragment f=new OrderHistoryFragment();
+//            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+//            ft.replace(R.id.content_home,f);
+//            ft.commit();
+//        }
+        else if (id == R.id.nav_gallery) {
             Intent i=new Intent(NavigationActivity.this, ItemCatAcivity.class);
             startActivity(i);
             overridePendingTransition(R.anim.page_in,R.anim.page_out);
 
 
         }
-        if (id == R.id.nav_help) {
+        else if (id == R.id.nav_help) {
             Intent i=new Intent(NavigationActivity.this, HelpActivity.class);
             startActivity(i);
             overridePendingTransition(R.anim.page_in,R.anim.page_out);
@@ -210,14 +217,14 @@ public class NavigationActivity extends BaseActivity implements NavigationView.O
 
         }
 
-        if (id == R.id.nav_tools) {
+        else  if (id == R.id.nav_tools) {
             Intent i=new Intent(NavigationActivity.this, GeneralSettings.class);
             startActivity(i);
             overridePendingTransition(R.anim.page_in,R.anim.page_out);
 
         }
 
-        if (id == R.id.nav_order_manage) {
+        else if (id == R.id.nav_order_manage) {
             Intent i=new Intent(NavigationActivity.this, NewOrderActivity.class);
             startActivity(i);
             overridePendingTransition(R.anim.page_in,R.anim.page_out);
@@ -245,7 +252,7 @@ public class NavigationActivity extends BaseActivity implements NavigationView.O
 
 
         }*/
-        if (id == R.id.nav_logout) {
+        else if (id == R.id.nav_logout) {
             Logout();
 
         }
@@ -274,10 +281,15 @@ public class NavigationActivity extends BaseActivity implements NavigationView.O
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        }
+       else if(getSupportFragmentManager().getFragments().get(0) instanceof Dashboard){
+
+            exit();
+
         } else {
 
-        exit();
-
+           Fragment fragment = new Dashboard();
+            replaceContentFragment(getActivity(), R.id.content_home, fragment);
         }
 
 

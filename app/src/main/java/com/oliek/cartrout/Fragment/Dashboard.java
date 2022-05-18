@@ -1,9 +1,12 @@
 package com.oliek.cartrout.Fragment;
+import android.app.Activity;
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.AudioAttributes;
@@ -12,7 +15,9 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.oliek.cartrout.BuildConfig;
 import com.oliek.cartrout.GlobalConstants;
 import com.oliek.cartrout.R;
 import com.oliek.cartrout.activity.ItemCatAcivity;
@@ -52,6 +58,7 @@ import com.oliek.cartrout.model.responsemodel.OrderCountResponseModel;
 import com.oliek.cartrout.network.ApiInterface;
 import com.oliek.cartrout.network.ApiNetwork;
 import com.oliek.cartrout.preference.PreferenceService;
+import com.oliek.cartrout.utill.Popup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,10 +68,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static com.oliek.cartrout.GlobalConstants.TAG;
 
 
 public class Dashboard extends BaseFragment implements View.OnClickListener , RecycleViewItemCallBack {
+    protected FragmentActivity mActivity;
 
     TextView txt_viewall;
     LinearLayout lyt_orders,lyt_menu;
@@ -151,6 +160,7 @@ public class Dashboard extends BaseFragment implements View.OnClickListener , Re
             @Override
             public void onRefresh() {
                 getdashboard();
+                getOrdercount();
                 refresh.setRefreshing(false); // Disables the refresh icon*/
 
             }
@@ -164,13 +174,16 @@ public class Dashboard extends BaseFragment implements View.OnClickListener , Re
         getOrdercount();
         return view;
     }
+
     private void setOrderCount(int count ) {
         if (count>0){
-            Animation shake;
-            shake = AnimationUtils.loadAnimation(this.getActivity(), R.anim.shake);
-            lyt_orders.startAnimation(shake);
-            Animation myFadeInAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce_reverse_count);
-            txt_ordercount.startAnimation(myFadeInAnimation);
+            if(getContext()!=null){
+                Animation shake= AnimationUtils.loadAnimation(getContext(), R.anim.shake);
+                lyt_orders.startAnimation(shake);
+                Animation myFadeInAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce_reverse_count);
+                txt_ordercount.startAnimation(myFadeInAnimation);
+            }
+
             txt_ordercount.setText(count+"");
             showProgressDialog(false);
 
@@ -179,6 +192,83 @@ public class Dashboard extends BaseFragment implements View.OnClickListener , Re
         }else {
             txt_ordercount.setVisibility(View.GONE);
         }
+    }
+    private void appUpdatePopop(boolean app_update) {
+        LayoutInflater layoutInflater=(LayoutInflater)getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        View popup_view=layoutInflater.inflate(R.layout.fore_udate_pop,null);
+        Popup popup=new Popup();
+        final Dialog review_popup = popup.dialoglog(getContext(), popup_view);
+        review_popup.setCancelable(true);
+        Button cancel_btn=popup_view.findViewById(R.id.cancel_btn);
+        Button btn_positive=popup_view.findViewById(R.id.btn_positive);
+        TextView head=popup_view.findViewById(R.id.head);
+        TextView popup_txt=popup_view.findViewById(R.id.popup_txt);
+        cancel_btn.setText("skip");
+        btn_positive.setText("update");
+        head.setText("App New Update");
+        popup_txt.setText("update your app for new features");
+
+        cancel_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                review_popup.dismiss();
+
+            }
+        });
+        if (app_update) {
+            review_popup.setCancelable(false);
+
+            cancel_btn.setVisibility(View.GONE);
+
+        }else {
+            cancel_btn.setVisibility(View.VISIBLE);
+        }
+        btn_positive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String url = "https://play.google.com/store/apps/details?id=com.oliek.cartrout";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+
+
+
+            }
+        });
+        review_popup.show();
+
+//        AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
+//        builder1.setTitle("App New Update");
+//        builder1.setMessage("update your app for new features");
+//        builder1.setCancelable(false);
+//
+//        builder1.setPositiveButton(
+//                "update",
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        dialog.cancel();
+//                        String url = "https://play.google.com/store/apps/details?id=com.oliek.cartrout";
+//                        Intent i = new Intent(Intent.ACTION_VIEW);
+//                        i.setData(Uri.parse(url));
+//                        startActivity(i);
+//
+//                    }
+//                });
+//        if (!app_update) {
+//            builder1.setNegativeButton(
+//                    "No",
+//                    new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int id) {
+//                            dialog.cancel();
+//                        }
+//                    });
+//        }
+//
+//
+//        AlertDialog alert11 = builder1.create();
+//        alert11.show();
     }
     private void getdashboard(){
         String url = GlobalConstants.BASE_URL + "getdashboard/?token="+user.getApi_tocken()+"&entity_id="+user.getEntity().getId();
@@ -225,6 +315,9 @@ public class Dashboard extends BaseFragment implements View.OnClickListener , Re
         txt_month.setText(body.getMonthorders()+"");
         setBestSelling(body.getItam());
         setNewOrders(body.getOrders());
+        if(body.getApp_vertion()> BuildConfig.VERSION_CODE){
+            appUpdatePopop(body.isApp_update());
+        }
     }
 
     private void setNewOrders(ArrayList<OrderModel> orders) {

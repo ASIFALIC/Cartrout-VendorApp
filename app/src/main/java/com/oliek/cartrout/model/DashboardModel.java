@@ -8,6 +8,24 @@ public class DashboardModel {
     private  int todayorders;
     private  int weekorders;
     private  int monthorders;
+    private int app_vertion;
+    private boolean app_update;
+
+    public int getApp_vertion() {
+        return app_vertion;
+    }
+
+    public void setApp_vertion(int app_vertion) {
+        this.app_vertion = app_vertion;
+    }
+
+    public boolean isApp_update() {
+        return app_update;
+    }
+
+    public void setApp_update(boolean app_update) {
+        this.app_update = app_update;
+    }
 
     public ArrayList<Itam> getItam() {
         return itam;

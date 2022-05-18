@@ -466,10 +466,12 @@ public class OrderDetailsActivity extends BaseActivity implements RecycleViewIte
             }
             else if (model.getDelivery_type() == 1) {
                 txt_status.setText("Out For Delivery");
-                btn_redytopic.setText("Out For Delivery");
             }
-            btn_delivered.setVisibility(View.VISIBLE);
             btn_redytopic.setVisibility(View.GONE);
+            btn_redytopic.clearAnimation();
+
+
+            btn_delivered.setVisibility(View.VISIBLE);
 
             lyt_accpet_reject.setVisibility(View.VISIBLE);
             btn_reject.clearAnimation();

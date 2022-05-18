@@ -103,7 +103,7 @@ public class ItemManagementAcivity extends BaseActivity implements View.OnClickL
     ImageView btn_search,cat_edit;
     CategoryModel model;
     ProductListAdapter productListAdapter;
-    private ArrayList<ProductModel> arrayListfull;
+    private ArrayList<ProductModel> arrayListfull = new ArrayList<>();;
     private ArrayList<ProductModel> serch=new ArrayList<>();
     private PreferenceService sh;
     private ApiInterface apiService;

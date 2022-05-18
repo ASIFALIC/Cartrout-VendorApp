@@ -40,6 +40,8 @@
     <string name="menu_send">Send</string>
 
     <string name="dashboard">DASHBOARD</string>
+    <string name="order_history">ORDER HISTORY</string>
+
     <string name="menu_management">MENU MANAGEMENT</string>
     <string name="order_management">ORDER MANAGEMENT</string>
     <string name="category_management">CATEGORY MANAGEMENT</string>
@@ -77,4 +79,5 @@
     <string name="empty_orders">No Order Received </string>
     <string name="help_desk_no">https://wa.me/message/DZME2F7HQ77FO1</string>
     <string name="helpdesk_mail_id">info@cartroot.com</string>
+    <string name="empty_items_list">Empty Items List</string>
 </resources>

@@ -78,7 +78,7 @@ public class ItemCatAcivity extends BaseActivity implements View.OnClickListener
     private UserModel user;
     private PreferenceService preferenceservice;
     CategoryListAdapter categoryListAdapter;
-    private ArrayList<CategoryModel> arrayListfull;
+    private ArrayList<CategoryModel> arrayListfull = new ArrayList<>();
     private ArrayList<CategoryModel> serch=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -469,4 +469,5 @@ public class ItemCatAcivity extends BaseActivity implements View.OnClickListener
 
 
     }
+
 }

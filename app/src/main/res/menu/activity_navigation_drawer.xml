@@ -8,6 +8,10 @@
             android:id="@+id/nav_home"
             android:icon="@drawable/left_mn_dashboard"
             android:title="@string/dashboard" />
+<!--        <item-->
+<!--            android:id="@+id/nav_history"-->
+<!--            android:icon="@drawable/ic_list_alt_24px"-->
+<!--            android:title="@string/order_history" />-->
         <item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/left_mn_orders"
